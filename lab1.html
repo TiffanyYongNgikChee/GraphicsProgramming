@@ -1,1 +1,52 @@
-<p>Hello</p>
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Canvas</title>
+
+    <style type="text/css">
+
+        canvas{
+            border: solid;
+        }
+	
+    </style>
+
+  </head>
+
+  <body>
+
+    <canvas id="canvasOne" width="500" height="500"></canvas>
+
+    <script type="text/javascript">
+		// Gets a handle to the element with id canvasOne.
+		const canvas = document.getElementById("canvasOne");
+
+		// Set the canvas up for drawing in 2D.
+		const ctx = canvas.getContext("2d");
+
+        ctx.globalCompositeOperation = "multiply";
+
+        //add my name as text to canvas
+        ctx.font = "70px Georgia";
+        ctx.fillText("Tiffany", 10, 480);
+        ctx.font = "80px Verdana";
+
+		// Set the fill colour to bright red.
+        ctx.fillStyle = "rgb(255, 0, 0)";
+
+		// Draw two overlapping rectangles
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(10, 10, 100, 100);
+        ctx.fillStyle = "pink";
+        ctx.fillRect(40, 40, 100, 100);
+
+       
+		
+    </script>
+
+  </body>
+
+</html>
