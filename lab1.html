@@ -9,7 +9,7 @@
     <style type="text/css">
 
         canvas{
-            border: solid;
+            border: 10px solid black; /*Draw a black border around the canvas*/
         }
 	
     </style>
@@ -18,7 +18,7 @@
 
   <body>
 
-    <canvas id="canvasOne" width="500" height="500"></canvas>
+    <canvas id="canvasOne" width="500" height="500"></canvas> 
 
     <script type="text/javascript">
 		// Gets a handle to the element with id canvasOne.
@@ -26,46 +26,55 @@
 
 		// Set the canvas up for drawing in 2D.
 		const ctx = canvas.getContext("2d");
+    
+    // Set global composite operation to multiply to blend overlapping colors
+    ctx.globalCompositeOperation = "multiply";
 
-        ctx.globalCompositeOperation = "multiply";
+    //add my name as text to canvas
+     ctx.font = "70px Georgia";
+     ctx.fillStyle = "rgba(0, 0, 0, 1)"; // Full opacity for text
+     ctx.fillText("Tiffany", 150, 100); // Position adjusted to be inside the border
 
-        //add my name as text to canvas
-        ctx.font = "70px Georgia";
-        ctx.fillText("Tiffany", 10, 480);
-        ctx.font = "80px Verdana";
+		  // Set transparency (40%) for the shapes using RGBA values
+      // Draw overlapping rectangles with transparency
+      ctx.fillStyle = "rgba(255, 255, 0, 0.4)"; // Yellow, 40% opacity
+      ctx.fillRect(50, 50, 150, 150); // First rectangle
 
-		// Set the fill colour to bright red.
-        ctx.fillStyle = "rgb(255, 0, 0)";
+      ctx.fillStyle = "rgba(255, 105, 180, 0.4)"; // Pink, 40% opacity
+      ctx.fillRect(120, 120, 150, 150); // Second rectangle overlapping the first
 
-		// Draw two overlapping rectangles
-        ctx.fillStyle = "yellow";
-        ctx.fillRect(10, 10, 100, 100);
-        ctx.fillStyle = "pink";
-        ctx.fillRect(40, 40, 100, 100);
+      // First circle: Full green circle
+      ctx.beginPath();
+      ctx.arc(100, 400, 50, 0, 2 * Math.PI); // Full circle
+      ctx.fillStyle = "rgba(0, 255, 0, 0.8)"; // Green with 80% opacity
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "rgba(0, 255, 0, 0.8)";
+      ctx.stroke();
 
-        ctx.beginPath();
-        ctx.arc(195, 250, 40, 0, 2 * Math.PI);
-        ctx.fillStyle = "pink";
-        ctx.fill();
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = "pink";
-        ctx.stroke();
+      // Second circle: Semi-circle in blue
+      ctx.beginPath();
+      ctx.arc(250, 400, 50, 0, Math.PI); // Semi-circle (half-circle)
+      ctx.fillStyle = "rgba(0, 0, 255, 0.8)"; // Blue with 80% opacity
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "rgba(0, 0, 255, 0.8)";
+      ctx.stroke();
 
-        ctx.beginPath();
-        ctx.arc(250, 250, 40, 0, 2 * Math.PI);
-        ctx.fillStyle = "yellow";
-        ctx.fill();
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = "yellow";
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.arc(295, 150, 40, 0, Math.PI);
-        ctx.fillStyle = "red";
-        ctx.fill();
-        ctx.strokeStyle = "red";
-        ctx.stroke();
-		
+      // Three-quarters of a circle in orange
+      ctx.beginPath();
+      ctx.moveTo(400, 400); // Move to the center of the circle
+      // Draw a line to the starting point of the arc
+      ctx.lineTo(400, 400); // Line to the right edge of the arc (x = 150, y = 100)
+      // Draw the arc (three-quarters of the circle)
+      ctx.arc(400, 400, 50, 0, 1.5 * Math.PI, false); // Draw from 0 to 270 degrees (three-quarters)
+      ctx.lineTo(400, 400);
+      // Fill the shape
+      ctx.fillStyle = "rgba(255, 165, 0, 0.8)"; // Orange color with 80% opacity
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "rgba(0, 0, 0, 0.8)";
+      ctx.stroke();
     </script>
 
   </body>
