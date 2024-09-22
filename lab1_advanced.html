@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Canvas Advanced</title>
+
+    <style type="text/css">
+
+        canvas{
+            border: 3px solid black; /*Draw a black border around the canvas*/
+            margin: 50px;
+        }
+	
+    </style>
+
+  </head>
+
+  <body>
+
+    <canvas id="canvasOne" width="500" height="800"></canvas>
+
+    <script type="text/javascript">
+
+        // Gets a handle to the element with id canvasOne.
+		const canvas = document.getElementById("canvasOne");
+
+        // Set the canvas up for drawing in 2D.
+        const ctx = canvas.getContext("2d");
+                
+		// Set global composite operation to multiply to blend overlapping colors
+        ctx.globalCompositeOperation = "multiply";
+        
+        ctx.fillStyle = "rgba(255, 255, 0, 0.4)";
+        ctx.fillRect(120, 0, 250, 120);
+
+        ctx.fillStyle = "red";
+        ctx.fillRect(180, 0, 130, 40);
+
+        ctx.beginPath();
+        ctx.arc(250, 120, 50, 0, Math.PI); // Semi-circle (half-circle)
+        ctx.fillStyle = "rgba(0, 0, 255, 0.8)"; // Blue with 80% opacity
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(0, 0, 255, 0.8)";
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(250, 400, 50, 0, 2 * Math.PI); // Full circle
+        ctx.fillStyle = "rgba(0, 255, 0, 0.8)"; // Green with 80% opacity
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(0, 255, 0, 0.8)";
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(255, 255, 0, 0.4)";
+        ctx.fillRect(120, 680, 250, 120);
+
+        ctx.fillStyle = "red";
+        ctx.fillRect(180, 760, 130, 40);
+
+        ctx.beginPath();
+        ctx.moveTo(250, 680);
+        ctx.arc(250, 680, 50, Math.PI, 2 * Math.PI, false);
+        ctx.lineTo(250, 680);
+        ctx.fillStyle = "rgba(0, 0, 255, 0.8)";
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.8)";
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(0, 400);
+        ctx.lineTo(500, 400);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(0, 0, 255, 0.8)"; 
+        ctx.stroke();
+
+    </script>
+
+  </body>
+
+</html>
