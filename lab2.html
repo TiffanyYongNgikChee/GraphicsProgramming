@@ -23,6 +23,27 @@
     <canvas id="canvas-for-ball"width="500" height="500"></canvas>
 
     <script type="text/javascript">
+    
+      class Animation{
+        constructor(xPosition,yPosition,xVelocity,yVelocity,radius) {
+            this.xPosition = xPosition;
+            this.yPosition = yPosition;
+            this.xVelocity = xVelocity;
+            this.yVelocity = yVelocity;
+            this.radius = radius;
+        }
+
+        static draw(){
+            xPosition=50;
+            yPosition=10;
+            radius=3;
+        }
+
+        static move(xPosition,yPosition){
+            xPosition+=xVelocity;
+            yPosition+=yVelocity;
+        }
+      }
       // Gets a handle to the element with id canvasOne.
       var canvas = document.getElementById("canvas-for-ball");
       // Get a 2D context for the canvas.
@@ -30,8 +51,8 @@
       
       // The vertical location of the ball.
       var yPosition = 10;
-      var ySpeed = 5;
-
+      var yVelocity = 2;
+    
       // A function to repeat every time the animation loops.
       function repeatme() {
         //clear the entire canvas
@@ -42,11 +63,14 @@
         ctx.stroke();
         
         // Update the y location.
-        yPosition += 1;
+        yPosition += yVelocity;
 
+        //If the ball hits the bottom of the canvas
         if(yPosition >= 497){
-            return;
+            //Change ball's direction.(reverse the speed)
+            yVelocity=yVelocity*-1;
         }
+        
         
         window.requestAnimationFrame(repeatme);
       }
