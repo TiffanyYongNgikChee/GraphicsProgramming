@@ -39,9 +39,12 @@
       // Draw overlapping rectangles with transparency
       ctx.fillStyle = "rgba(255, 255, 0, 0.4)"; // Yellow, 40% opacity
       ctx.fillRect(50, 50, 150, 150); // First rectangle
-
+      ctx.strokeStyle = "black";
+      ctx.strokeRect(50, 50, 150, 150);
       ctx.fillStyle = "rgba(255, 105, 180, 0.4)"; // Pink, 40% opacity
       ctx.fillRect(120, 120, 150, 150); // Second rectangle overlapping the first
+      ctx.strokeStyle = "black";
+      ctx.strokeRect(120, 120, 150, 150);
 
       // First circle: Full green circle
       ctx.beginPath();
@@ -49,7 +52,7 @@
       ctx.fillStyle = "rgba(0, 255, 0, 0.8)"; // Green with 80% opacity
       ctx.fill();
       ctx.lineWidth = 2;
-      ctx.strokeStyle = "rgba(0, 255, 0, 0.8)";
+      ctx.strokeStyle = "black";
       ctx.stroke();
 
       // Second circle: Semi-circle in blue
@@ -58,7 +61,7 @@
       ctx.fillStyle = "rgba(0, 0, 255, 0.8)"; // Blue with 80% opacity
       ctx.fill();
       ctx.lineWidth = 2;
-      ctx.strokeStyle = "rgba(0, 0, 255, 0.8)";
+      ctx.strokeStyle = "black";
       ctx.stroke();
 
       // Three-quarters of a circle in orange
