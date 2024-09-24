@@ -9,7 +9,7 @@
     <style type="text/css">
 
         canvas{
-            border: 10px solid black; /*Draw a black border around the canvas*/
+            border: 5px solid black; /*Draw a black border around the canvas*/
         }
 	
     </style>
@@ -21,19 +21,19 @@
     <canvas id="canvasOne" width="500" height="500"></canvas> 
 
     <script type="text/javascript">
-		// Gets a handle to the element with id canvasOne.
-		const canvas = document.getElementById("canvasOne");
+		  // Gets a handle to the element with id canvasOne.
+      const canvas = document.getElementById("canvasOne");
 
-		// Set the canvas up for drawing in 2D.
-		const ctx = canvas.getContext("2d");
-    
-    // Set global composite operation to multiply to blend overlapping colors
-    ctx.globalCompositeOperation = "multiply";
+      // Set the canvas up for drawing in 2D.
+      const ctx = canvas.getContext("2d");
+      
+      // Set global composite operation to multiply to blend overlapping colors
+      ctx.globalCompositeOperation = "multiply";
 
-    //add my name as text to canvas
-     ctx.font = "30px Georgia";
-     ctx.fillStyle = "rgba(0, 0, 0, 1)"; // Full opacity for text
-     ctx.fillText("Tiffany Yong", 150, 100); // Position adjusted to be inside the border
+      //add my name as text to canvas
+      ctx.font = "30px Georgia";
+      ctx.fillStyle = "rgba(0, 0, 0, 1)"; // Full opacity for text
+      ctx.fillText("Tiffany Yong", 150, 100); // Position adjusted to be inside the border
 
 		  // Set transparency (40%) for the shapes using RGBA values
       // Draw overlapping rectangles with transparency
