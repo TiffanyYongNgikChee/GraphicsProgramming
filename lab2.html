@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html>
@@ -24,68 +23,98 @@
 
     <script type="text/javascript">
     
-      class Animation{
-        constructor(xPosition,yPosition,xVelocity,yVelocity,radius) {
-            this.xPosition = xPosition;
-            this.yPosition = yPosition;
-            this.xVelocity = xVelocity;
-            this.yVelocity = yVelocity;
-            this.radius = radius;
-        }
-
-        static draw(){
-            xPosition=50;
-            yPosition=10;
-            radius=3;
-        }
-
-        static move(xPosition,yPosition){
-            xPosition+=xVelocity;
-            yPosition+=yVelocity;
-        }
-      }
+      
       // Gets a handle to the element with id canvasOne.
       var canvas = document.getElementById("canvas-for-ball");
       // Get a 2D context for the canvas.
       var ctx = canvas.getContext("2d");
+
+      class Ball{
+        constructor(xPosition,yPosition,xVelocity,yVelocity,radius){
+            this.xPosition=xPosition;// The horizontal location of the ball.
+            this.yPosition=yPosition;// The vertical location of the ball.
+            this.xVelocity=xVelocity;
+            this.yVelocity=yVelocity;
+            this.radius=radius;
+            this.roatation=0;
+        }
+
+        draw(){
+            // Draw the horizontal ball (stroked, not filled).
+            ctx.beginPath();
+            ctx.arc(this.xPosition, this.yPosition, this.radius, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // Increment the rotation angle by 0.1 radians for continuous rotation.
+            this.roatation=this.roatation+0.1;
+
+            // Calculate the (x1, y1) of a point on the ball using cosine and sine
+            // The angle is (π/4 + rotation), which corresponds to 45 degrees offset from the current rotation.
+            var x1 =(this.radius*Math.cos((Math.PI/4)+this.roatation))+this.xPosition;
+            var y1 =(this.radius*Math.sin((Math.PI/4)+this.roatation))+this.yPosition;
+            ctx.moveTo(this.xPosition,this.yPosition);
+            ctx.lineTo(x1,y1);
+            ctx.stroke();
+
+            // To 135 degrees offset from the current rotation.
+            var x2 =(this.radius*Math.cos((3* Math.PI/4)+this.roatation))+this.xPosition;
+            var y2 =(this.radius*Math.sin((3* Math.PI/4)+this.roatation))+this.yPosition;
+            ctx.moveTo(this.xPosition,this.yPosition);
+            ctx.lineTo(x2,y2);
+            ctx.stroke();
+
+            // This corresponds to the top of the circle. for a point 90 degrees
+            var x3 =(this.radius*Math.cos((Math.PI/2)+this.roatation))+this.xPosition;
+            var y3 =(this.radius*Math.sin((Math.PI/2)+this.roatation))+this.yPosition;
+            ctx.moveTo(this.xPosition,this.yPosition);
+            ctx.lineTo(x3,y3);
+            ctx.stroke();
+
+            // This corresponds to the bottom of the circle. for a point 270 degrees
+            var x4 =(this.radius*Math.cos((3* Math.PI/2)+this.roatation))+this.xPosition;
+            var y4 =(this.radius*Math.sin((3* Math.PI/2)+this.roatation))+this.yPosition;
+            ctx.moveTo(this.xPosition,this.yPosition);
+            ctx.lineTo(x4,y4);
+            ctx.stroke();
+        }
+
+        move(){
+            // Update the y location.
+            this.yPosition += this.yVelocity;
+            this.xPosition += this.xVelocity;
+            const stoppingPoint=500-this.radius;
+
+             //If the ball hits the bottom of the canvas
+            if(this.yPosition >= stoppingPoint){
+                //Change ball's direction.(reverse the speed)
+                this.yVelocity=this.yVelocity*-1;
+            }
+            //Otherwise, if the ball hit the top
+            else if(this.yPosition <= this.radius){
+                this.yVelocity=this.yVelocity*-1;
+            }
+
+            if(this.xPosition >= stoppingPoint)
+            {
+                this.xVelocity=this.xVelocity*-1;
+            }
+            else if(this.xPosition <= this.radius)
+            {
+                this.xVelocity=this.xVelocity*-1;
+            }
+        }
+      }
       
-      // The vertical location of the ball.
-      var yPosition = 10;
-      var yVelocity = 2;
-      var xPosition = 10
-      var xVelocity = 5;
+      myBall = new Ball(20,20,5,2,20);
+
       // A function to repeat every time the animation loops.
       function repeatme() {
         //clear the entire canvas
         ctx.clearRect(0,0,500,500);
-        // Draw the horizontal ball (stroked, not filled).
-        ctx.beginPath();
-        ctx.arc(xPosition, yPosition, 3, 0, 2 * Math.PI);
-        ctx.stroke();
-   
-        // Update the y location.
-        yPosition += yVelocity;
-        xPosition += xVelocity;
+        myBall.draw();
+        myBall.move();
 
-        //If the ball hits the bottom of the canvas
-        if(yPosition >= 497){
-            //Change ball's direction.(reverse the speed)
-            yVelocity=yVelocity*-1;
-        }
-        //Otherwise, if the ball hit the top
-        else if(yPosition <= 3){
-            yVelocity=yVelocity*-1;
-        }
-
-        if(xPosition >= 497)
-        {
-            xVelocity=xVelocity*-1;
-        }
-        else if(xPosition <= 3)
-        {
-            xVelocity=xVelocity*-1;
-        }
-        
+       
         window.requestAnimationFrame(repeatme);
       }
       
