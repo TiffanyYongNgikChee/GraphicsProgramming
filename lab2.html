@@ -22,8 +22,7 @@
     <canvas id="canvas-for-ball"width="500" height="500"></canvas>
 
     <script type="text/javascript">
-    
-      
+
       // Gets a handle to the element with id canvasOne.
       var canvas = document.getElementById("canvas-for-ball");
       // Get a 2D context for the canvas.
@@ -92,6 +91,7 @@
              //If the ball hits the bottom of the canvas
             if(this.yPosition >= stoppingPoint){
                 //Change ball's direction.(reverse the speed)
+                console.log("hit bottom of screen");
                 this.yVelocity=this.yVelocity*-1;
                 this.rotationSpeed *= -1;  // Reverse rotation direction
             }
@@ -102,6 +102,7 @@
 
             if(this.xPosition >= stoppingPoint)
             {
+                console.log("hit top of screen");
                 this.xVelocity=this.xVelocity*-1;
                 this.rotationSpeed *= -1;  // Reverse rotation direction
             }
@@ -110,10 +111,12 @@
                 this.xVelocity=this.xVelocity*-1;
             }
         }
-        rotate(){
+
+      rotate(){
         // Increment the rotation by the rotationSpeed.
         this.rotation += this.rotationSpeed;
-    }
+        }
+
       }
       
       myBall = new Ball(20,20,5,2,20);
