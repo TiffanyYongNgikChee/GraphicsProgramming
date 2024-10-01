@@ -31,7 +31,8 @@
       
       canvas.addEventListener("click", function(event) { 
         ctx.beginPath();
-        ctx.arc(50, 50, 6, 0, 2 * Math.PI);
+        // to draw the circle at (event.clientX, event.clientY), rather than (50, 50)
+        ctx.arc(event.clientX, event.clientY, 6, 0, 2 * Math.PI);
         ctx.fill();
         
         noClicks += 1;
