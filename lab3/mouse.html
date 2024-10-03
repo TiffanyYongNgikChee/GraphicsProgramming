@@ -29,10 +29,22 @@
       // Make the fill style red.
       ctx.fillStyle = "rgb(255, 0, 0)";
       
+      // stores these coordinates (x and y) in an object named canvasPosition
+      var canvasPosition = {
+        x: canvas.offsetLeft, // Horizontal offset from the left side
+        y: canvas.offsetTop // Vertical offset from the top side
+      };
+      
       canvas.addEventListener("click", function(event) { 
+        //Figure out local mouse coords
+        var mouse = {
+            x: event.clientX - canvasPosition.x,
+            y: event.clientY - canvasPosition.y
+        }
+
         ctx.beginPath();
         //the circle is being drawn to use the event's client coordinates
-        ctx.arc(event.clientX, event.clientY, 6, 0, 2 * Math.PI); 
+        ctx.arc(mouse.x, mouse.y, 6, 0, 2 * Math.PI); 
         ctx.fill();
         
         noClicks += 1;
