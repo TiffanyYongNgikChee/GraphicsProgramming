@@ -36,8 +36,10 @@
             this.height = height;// The height of the rectangle
         }
 
-        draw(){
-            
+        // Method to draw the paddle on the canvas
+        draw(ctx){
+            ctx.fillStyle = '#FFBCBC'; // Set the paddle color (you can change it)
+            ctx.fillRect(this.xPosition, this.yPosition, this.width, this.height); // Draw rectangle
         }
 
         move(){
@@ -46,16 +48,42 @@
 
       }
       
-
+      // Create a new paddle at position (30, 150) with a width of 150 and height of 100
+      let paddle = new Paddle(30, 150, 150, 100);
       // A function to repeat every time the animation loops.
       function repeatme() {
 
-        
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+        paddle.draw(ctx);  // Draw the paddle at its current position
         window.requestAnimationFrame(repeatme);
       }
+
+      
       
       // Get the animation going.
       repeatme();
+
+      // stores these coordinates (x and y) in an object named canvasPosition
+      var canvasPosition = {
+        x: canvas.offsetLeft, // Horizontal offset from the left side
+        y: canvas.offsetTop // Vertical offset from the top side
+      };
+      
+      canvas.addEventListener("click", function(event) { 
+        //Figure out local mouse coords
+        var mouse = {
+            x: event.clientX - canvasPosition.x,
+            y: event.clientY - canvasPosition.y
+        }
+
+        ctx.beginPath();
+        //the circle is being drawn to use the event's client coordinates
+        ctx.arc(mouse.x, mouse.y, 6, 0, 2 * Math.PI); 
+        ctx.fill();
+        
+        noClicks += 1;
+        console.log(noClicks);
+    });
     </script>
 
   </body>
