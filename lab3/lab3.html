@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html>
-
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
   <head>
     <meta charset="UTF-8">
     <title>Canvas</title>
@@ -30,10 +30,11 @@
 
       class Paddle{
         constructor(xPosition,yPosition,width, height){
-            this.xPosition=xPosition;// The horizontal location of the ball.
-            this.yPosition=yPosition;// The vertical location of the ball.
-            this.width = width;// The width of the rectangle
-            this.height = height;// The height of the rectangle
+            this.xPosition=xPosition;   // The horizontal location of the ball.
+            this.yPosition=yPosition;   // The vertical location of the ball.
+            this.width = width;         // The width of the rectangle
+            this.height = height;       // The height of the rectangle
+            this.speed = 10;            // Speed for moving the paddle
         }
 
         // Method to draw the paddle on the canvas
@@ -46,29 +47,31 @@
             this.xPosition = x - this.width/2;
             this.yPosition = y - this.height/2; // Center the paddle at the mouse y position
             
-            //ensure that the paddle stays inside the canvas and doesn't move outside its 500x500 dimensions
-            //Right Boundary Check
-            if(this.xPosition+this.width>500){
-                this.xPosition=500-this.width;
-            }
-            //Left Boundary Check
-            if(this.xPosition<0){
-                this.xPosition=0;
-            }
-            //Bottom Boundary Check
-            if(this.yPosition+this.height>500){
-                this.yPosition=500-this.height;
-            }
-            //Top Boundary Check
-            if(this.yPosition<0){
-                this.yPosition=0;
+        }
+        move_keyboard(direction){
+            switch(direction){
+            // key code for up arrow
+            case 38:
+                if(this.yPosition + this.speed >= canvas.height - this.height) return;
+                this.yPosition += this.speed;
+				break;
+
+			// key code for down arrow
+			case 40:
+                if(this.yPosition - this.speed <= 0) return;
+                this.yPosition -= this.speed;
+				break;
             }
         }
-
       }
       
       // Create a new paddle at position (30, 150) with a width of 150 and height of 100
       let paddle = new Paddle(30, 150, 150, 100);
+
+      // Flags to track whether up or down keys are pressed
+      let upPressed = false;
+      let downPressed = false;
+
 
       // A function to repeat every time the animation loops.
       function repeatme() {
@@ -78,8 +81,6 @@
         window.requestAnimationFrame(repeatme);
       }
 
-      
-      
       // Get the animation going.
       repeatme();
 
@@ -100,6 +101,39 @@
         
         console.log(mouse.x+" :: "+mouse.y);
       });
+
+      // Add a Javascript event listener to the keypress event.
+	  window.addEventListener("keypress", function(event) { 
+			// Just log the event to the console.
+			console.log(event);
+	  });
+
+	  //keypresses with jQuery
+	  $(document.body).on('keydown', function(e) {
+			console.log(e.which);
+			switch (e.which) {
+			// key code for left arrow
+			case 37:
+				console.log('left arrow key pressed!');
+				break;
+            // key code for up arrow
+            case 38:
+                upPressed = true;
+				console.log('up arrow key pressed!');
+                paddle.move_keyboard(40);
+				break;
+			// key code for right arrow
+			case 39:
+				console.log('right arrow key pressed!');
+				break;
+			// key code for down arrow
+			case 40:
+                downPressed = true;
+				console.log('down arrow key pressed!');
+                paddle.move_keyboard(38);
+				break;
+			}
+	  });
     </script>
 
   </body>
