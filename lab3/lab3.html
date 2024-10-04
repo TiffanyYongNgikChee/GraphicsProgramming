@@ -45,7 +45,24 @@
         move(x,y){
             this.xPosition = x - this.width/2;
             this.yPosition = y - this.height/2; // Center the paddle at the mouse y position
-          
+            
+            //ensure that the paddle stays inside the canvas and doesn't move outside its 500x500 dimensions
+            //Right Boundary Check
+            if(this.xPosition+this.width>500){
+                this.xPosition=500-this.width;
+            }
+            //Left Boundary Check
+            if(this.xPosition<0){
+                this.xPosition=0;
+            }
+            //Bottom Boundary Check
+            if(this.yPosition+this.height>500){
+                this.yPosition=500-this.height;
+            }
+            //Top Boundary Check
+            if(this.yPosition<0){
+                this.yPosition=0;
+            }
         }
 
       }
