@@ -27,7 +27,90 @@
       var canvas = document.getElementById("canvas-for-ball");
       // Get a 2D context for the canvas.
       var ctx = canvas.getContext("2d");
+      class Ball{
+        constructor(xPosition,yPosition,xVelocity,yVelocity,radius){
+            this.xPosition=xPosition;// The horizontal location of the ball.
+            this.yPosition=yPosition;// The vertical location of the ball.
+            this.xVelocity=xVelocity;
+            this.yVelocity=yVelocity;
+            this.radius=radius;
+            this.rotation=0;
+            this.rotationSpeed = 0.1;  // Initial speed of rotation
+        }
 
+        draw(){
+            // Set the stroke color for visibility (black for both the circle and lines).
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2; // Optional: Make the line thicker for visibility
+
+            // Draw the horizontal ball (stroked, not filled).
+            ctx.beginPath();
+            ctx.arc(this.xPosition, this.yPosition, this.radius, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // Increment the rotation angle by 0.1 radians for continuous rotation.
+            this.roatation=this.rotation+0.1;
+
+            // Calculate the (x1, y1) of a point on the ball using cosine and sine
+            // The angle is (π/4 + rotation), which corresponds to 45 degrees offset from the current rotation.
+            var x1 =(this.radius*Math.cos((Math.PI/4)+this.rotation))+this.xPosition;
+            var y1 =(this.radius*Math.sin((Math.PI/4)+this.rotation))+this.yPosition;
+            ctx.moveTo(this.xPosition,this.yPosition);
+            ctx.lineTo(x1,y1);
+            ctx.stroke();
+
+            // To 135 degrees offset from the current rotation.
+            var x2 =(this.radius*Math.cos((3* Math.PI/4)+this.rotation))+this.xPosition;
+            var y2 =(this.radius*Math.sin((3* Math.PI/4)+this.rotation))+this.yPosition;
+            ctx.moveTo(this.xPosition,this.yPosition);
+            ctx.lineTo(x2,y2);
+            ctx.stroke();
+
+            // This corresponds to the top of the circle. for a point 90 degrees
+            var x3 =(this.radius*Math.cos((Math.PI/2)+this.rotation))+this.xPosition;
+            var y3 =(this.radius*Math.sin((Math.PI/2)+this.rotation))+this.yPosition;
+            ctx.moveTo(this.xPosition,this.yPosition);
+            ctx.lineTo(x3,y3);
+            ctx.stroke();
+
+            // This corresponds to the bottom of the circle. for a point 270 degrees
+            var x4 =(this.radius*Math.cos((3* Math.PI/2)+this.rotation))+this.xPosition;
+            var y4 =(this.radius*Math.sin((3* Math.PI/2)+this.rotation))+this.yPosition;
+            ctx.moveTo(this.xPosition,this.yPosition);
+            ctx.lineTo(x4,y4);
+            ctx.stroke();
+        }
+
+        move(){
+            // Update the y location.
+            this.yPosition += this.yVelocity;
+            this.xPosition += this.xVelocity;
+            const stoppingPoint=500-this.radius;
+
+             //If the ball hits the bottom of the canvas
+            if(this.yPosition >= stoppingPoint){
+                //Change ball's direction.(reverse the speed)
+                console.log("hit bottom of screen");
+                this.yVelocity=this.yVelocity*-1;
+                this.rotationSpeed *= -1;  // Reverse rotation direction
+            }
+            //Otherwise, if the ball hit the top
+            else if(this.yPosition <= this.radius){
+                this.yVelocity=this.yVelocity*-1;
+            }
+
+            if(this.xPosition >= stoppingPoint)
+            {
+                console.log("hit top of screen");
+                this.xVelocity=this.xVelocity*-1;
+                this.rotationSpeed *= -1;  // Reverse rotation direction
+            }
+            else if(this.xPosition <= this.radius)
+            {
+                this.xVelocity=this.xVelocity*-1;
+            }
+        }
+        }
       class Paddle{
         constructor(xPosition,yPosition,width, height){
             this.xPosition=xPosition;   // The horizontal location of the ball.
@@ -123,7 +206,6 @@
         }
 
         paddleOne.move(mouse.x,mouse.y);
-        paddleTwo.move(mouse.x,mouse.y);
         
         console.log(mouse.x+" :: "+mouse.y);
       });
@@ -148,6 +230,7 @@
                 upPressed = true;
 				console.log('up arrow key pressed!');
                 paddleOne.move_keyboard(40);
+                paddleTwo.move_keyboard(40);
 				break;
 			// key code for right arrow
 			case 39:
@@ -159,6 +242,7 @@
                 downPressed = true;
 				console.log('down arrow key pressed!');
                 paddleOne.move_keyboard(38);
+                paddleTwo.move_keyboard(38);
 				break;
 			}
 	  });
