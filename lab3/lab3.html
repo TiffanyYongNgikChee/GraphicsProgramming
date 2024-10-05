@@ -47,15 +47,41 @@
             this.xPosition = x - this.width/2;
             this.yPosition = y - this.height/2; // Center the paddle at the mouse y position
             
+            //ensure that the paddle stays inside the canvas and doesn't move outside its 500x500 dimensions
+            //Right Boundary Check
+            if(this.xPosition+this.width>500){
+                this.xPosition=500-this.width;
+            }
+            //Left Boundary Check
+            if(this.xPosition<0){
+                this.xPosition=0;
+            }
+            //Bottom Boundary Check
+            if(this.yPosition+this.height>500){
+                this.yPosition=500-this.height;
+            }
+            //Top Boundary Check
+            if(this.yPosition<0){
+                this.yPosition=0;
+            }
         }
         move_keyboard(direction){
             switch(direction){
+            // key code for left arrow
+            case 37:
+                if(this.xPosition + this.speed >= canvas.width - this.width) return;
+                this.xPosition += this.speed;
+				break;
             // key code for up arrow
             case 38:
                 if(this.yPosition + this.speed >= canvas.height - this.height) return;
                 this.yPosition += this.speed;
 				break;
-
+            // key code for right arrow
+            case 39:
+                if(this.xPosition + this.speed <= 0) return;
+                this.xPosition -= this.speed;
+				break;
 			// key code for down arrow
 			case 40:
                 if(this.yPosition - this.speed <= 0) return;
@@ -66,18 +92,17 @@
       }
       
       // Create a new paddle at position (30, 150) with a width of 150 and height of 100
-      let paddle = new Paddle(30, 150, 150, 100);
+      let paddleOne = new Paddle(30, 150, 150, 100);
 
-      // Flags to track whether up or down keys are pressed
-      let upPressed = false;
-      let downPressed = false;
-
+      //Instantiate a second paddle on the other side of the canvas and give key controls to move it
+      let paddleTwo = new Paddle(350, 150, 150, 100);
 
       // A function to repeat every time the animation loops.
       function repeatme() {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-        paddle.draw(ctx);  // Draw the paddle at its current position
+        paddleOne.draw(ctx);  // Draw the paddle at its current position
+        paddleTwo.draw(ctx);
         window.requestAnimationFrame(repeatme);
       }
 
@@ -97,7 +122,8 @@
             y: event.clientY - canvasPosition.y
         }
 
-        paddle.move(mouse.x,mouse.y);
+        paddleOne.move(mouse.x,mouse.y);
+        paddleTwo.move(mouse.x,mouse.y);
         
         console.log(mouse.x+" :: "+mouse.y);
       });
@@ -115,22 +141,24 @@
 			// key code for left arrow
 			case 37:
 				console.log('left arrow key pressed!');
+                paddleTwo.move_keyboard(39);
 				break;
             // key code for up arrow
             case 38:
                 upPressed = true;
 				console.log('up arrow key pressed!');
-                paddle.move_keyboard(40);
+                paddleOne.move_keyboard(40);
 				break;
 			// key code for right arrow
 			case 39:
 				console.log('right arrow key pressed!');
+                paddleTwo.move_keyboard(37);
 				break;
 			// key code for down arrow
 			case 40:
                 downPressed = true;
 				console.log('down arrow key pressed!');
-                paddle.move_keyboard(38);
+                paddleOne.move_keyboard(38);
 				break;
 			}
 	  });
