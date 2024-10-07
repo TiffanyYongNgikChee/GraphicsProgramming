@@ -20,6 +20,9 @@
 
   <body>
     <h1>Tiffany Yong</h1>
+    <p>Press ↑ to spin faster.
+        Press ↓ to spin slower.
+        Press Spacebar to reset the spin speed to the default value.</p>
     <canvas id="canvas-for-ball"width="500" height="500"></canvas>
 
     <script type="text/javascript">
@@ -37,6 +40,25 @@
             this.radius=radius;
             this.rotation=0;
             this.rotationSpeed = 0.1;  // Initial speed of rotation
+            this.setupKeyControls(); // Add key controls
+        }
+
+        // Function to handle key events for speed control
+        setupKeyControls() {
+            window.addEventListener('keydown', (event) => {
+                switch (event.code) {
+                    case 'ArrowUp': // Increase the spin speed
+                        this.rotationSpeed += 0.1;
+                        break;
+                    case 'ArrowDown': // Decrease the spin speed
+                        this.rotationSpeed -= 0.1;
+                        if (this.rotationSpeed < 0) this.rotationSpeed = 0; // Prevent negative speed
+                        break;
+                    case 'Space': // Reset spin speed to default
+                        this.rotationSpeed = 0.1;
+                        break;
+                }
+            });
         }
 
         draw(){
