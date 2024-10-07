@@ -40,6 +40,8 @@
             this.radius=radius;
             this.rotation=0;
             this.rotationSpeed = 0.1;  // Initial speed of rotation
+            this.gravity = 0.5;  // Gravity pulling the ball downward (you can adjust this value)
+            this.bounceDamping = 0.9;  // Damping factor for bounce (90% height after bounce)
             this.setupKeyControls(); // Add key controls
         }
 
@@ -109,32 +111,42 @@
         }
 
         move(){
-            // Update the y location.
+            // Apply gravity to the yVelocity
+            this.yVelocity += this.gravity;
+        
+            // Update the x and y position with the new velocity
             this.yPosition += this.yVelocity;
             this.xPosition += this.xVelocity;
-            const stoppingPoint=500-this.radius;
+            
+            // Define the stopping points (edges of the canvas)
+            const stoppingPointX = 500 - this.radius;
+            const stoppingPointY = 500 - this.radius;
 
-             //If the ball hits the bottom of the canvas
-            if(this.yPosition >= stoppingPoint){
+            //If the ball hits the bottom of the canvas
+            if(this.yPosition >= stoppingPointY){
                 //Change ball's direction.(reverse the speed)
                 console.log("hit bottom of screen");
-                this.yVelocity=this.yVelocity*-1;
-                this.rotationSpeed *= -1;  // Reverse rotation direction
+                this.yPosition = stoppingPointY; // Ensure the ball doesn't go below the canvas
+                this.yVelocity *= -this.bounceDamping; // Reverse velocity with energy loss (90%)
+                this.rotationSpeed *= this.bounceDamping; // Slow down rotation due to energy loss
             }
-            //Otherwise, if the ball hit the top
+            // Handle bouncing off the top of the canvas
             else if(this.yPosition <= this.radius){
-                this.yVelocity=this.yVelocity*-1;
+                this.yPosition = this.radius; // Ensure the ball doesn't go above the canvas
+                this.yVelocity *= -this.bounceDamping; // Reverse velocity with energy loss (90%)
             }
 
-            if(this.xPosition >= stoppingPoint)
-            {
-                console.log("hit top of screen");
-                this.xVelocity=this.xVelocity*-1;
-                this.rotationSpeed *= -1;  // Reverse rotation direction
+            // Handle bouncing off the right side of the canvas
+            if (this.xPosition >= stoppingPointX) {
+                console.log("hit right of screen");
+                this.xPosition = stoppingPointX;
+                this.xVelocity *= -this.bounceDamping; // Reverse velocity with energy loss (90%)
             }
-            else if(this.xPosition <= this.radius)
-            {
-                this.xVelocity=this.xVelocity*-1;
+
+            // Handle bouncing off the left side of the canvas
+            else if (this.xPosition <= this.radius) {
+                this.xPosition = this.radius;
+                this.xVelocity *= -this.bounceDamping; // Reverse velocity with energy loss (90%)
             }
         }
         rotate(){
