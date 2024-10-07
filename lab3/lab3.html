@@ -52,33 +52,37 @@
             // Increment the rotation angle by 0.1 radians for continuous rotation.
             this.roatation=this.rotation+0.1;
 
-            // Calculate the (x1, y1) of a point on the ball using cosine and sine
-            // The angle is (π/4 + rotation), which corresponds to 45 degrees offset from the current rotation.
-            var x1 =(this.radius*Math.cos((Math.PI/4)+this.rotation))+this.xPosition;
-            var y1 =(this.radius*Math.sin((Math.PI/4)+this.rotation))+this.yPosition;
-            ctx.moveTo(this.xPosition,this.yPosition);
-            ctx.lineTo(x1,y1);
+            // Function to convert polar to cartesian coordinates.
+            const polarToCartesian = (radius, angle, centerX, centerY) => {
+                return {
+                    x: centerX + radius * Math.cos(angle),
+                    y: centerY + radius * Math.sin(angle)
+                };
+            };
+
+            // Calculate and draw lines to multiple points on the ball.
+            // 45 degrees (π/4) offset from the current rotation
+            let point1 = polarToCartesian(this.radius, Math.PI / 4 + this.rotation, this.xPosition, this.yPosition);
+            ctx.moveTo(this.xPosition, this.yPosition);
+            ctx.lineTo(point1.x, point1.y);
             ctx.stroke();
 
-            // To 135 degrees offset from the current rotation.
-            var x2 =(this.radius*Math.cos((3* Math.PI/4)+this.rotation))+this.xPosition;
-            var y2 =(this.radius*Math.sin((3* Math.PI/4)+this.rotation))+this.yPosition;
-            ctx.moveTo(this.xPosition,this.yPosition);
-            ctx.lineTo(x2,y2);
+            // 135 degrees (3π/4) offset from the current rotation
+            let point2 = polarToCartesian(this.radius, 3 * Math.PI / 4 + this.rotation, this.xPosition, this.yPosition);
+            ctx.moveTo(this.xPosition, this.yPosition);
+            ctx.lineTo(point2.x, point2.y);
             ctx.stroke();
 
-            // This corresponds to the top of the circle. for a point 90 degrees
-            var x3 =(this.radius*Math.cos((Math.PI/2)+this.rotation))+this.xPosition;
-            var y3 =(this.radius*Math.sin((Math.PI/2)+this.rotation))+this.yPosition;
-            ctx.moveTo(this.xPosition,this.yPosition);
-            ctx.lineTo(x3,y3);
+            // 90 degrees (π/2) top of the circle
+            let point3 = polarToCartesian(this.radius, Math.PI / 2 + this.rotation, this.xPosition, this.yPosition);
+            ctx.moveTo(this.xPosition, this.yPosition);
+            ctx.lineTo(point3.x, point3.y);
             ctx.stroke();
 
-            // This corresponds to the bottom of the circle. for a point 270 degrees
-            var x4 =(this.radius*Math.cos((3* Math.PI/2)+this.rotation))+this.xPosition;
-            var y4 =(this.radius*Math.sin((3* Math.PI/2)+this.rotation))+this.yPosition;
-            ctx.moveTo(this.xPosition,this.yPosition);
-            ctx.lineTo(x4,y4);
+            // 270 degrees (3π/2) bottom of the circle
+            let point4 = polarToCartesian(this.radius, 3 * Math.PI / 2 + this.rotation, this.xPosition, this.yPosition);
+            ctx.moveTo(this.xPosition, this.yPosition);
+            ctx.lineTo(point4.x, point4.y);
             ctx.stroke();
         }
 
@@ -176,7 +180,7 @@
       let paddleOne = new Paddle(30, 50, 20, 100);
 
       //Instantiate a second paddle on the other side of the canvas and give key controls to move it
-      let paddleTwo = new Paddle(350, 50, 20, 100);
+      let paddleTwo = new Paddle(400, 50, 20, 100);
 
       // A function to repeat every time the animation loops.
       function repeatme() {
