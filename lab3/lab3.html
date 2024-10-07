@@ -110,6 +110,10 @@
                 this.xVelocity=this.xVelocity*-1;
             }
         }
+        rotate(){
+        // Increment the rotation by the rotationSpeed.
+        this.rotation += this.rotationSpeed;
+        }
         }
       class Paddle{
         constructor(xPosition,yPosition,width, height){
@@ -150,22 +154,14 @@
         }
         move_keyboard(direction){
             switch(direction){
-            // key code for left arrow
-            case 37:
-                if(this.xPosition + this.speed >= canvas.width - this.width) return;
-                this.xPosition += this.speed;
-				break;
             // key code for up arrow
+            case 87:
             case 38:
                 if(this.yPosition + this.speed >= canvas.height - this.height) return;
                 this.yPosition += this.speed;
 				break;
-            // key code for right arrow
-            case 39:
-                if(this.xPosition + this.speed <= 0) return;
-                this.xPosition -= this.speed;
-				break;
-			// key code for down arrow
+            // key code for down arrow
+            case 83:
 			case 40:
                 if(this.yPosition - this.speed <= 0) return;
                 this.yPosition -= this.speed;
@@ -173,17 +169,21 @@
             }
         }
       }
-      
+      myBall = new Ball(20,20,5,2,20);
+
       // Create a new paddle at position (30, 150) with a width of 150 and height of 100
-      let paddleOne = new Paddle(30, 150, 150, 100);
+      let paddleOne = new Paddle(30, 50, 20, 100);
 
       //Instantiate a second paddle on the other side of the canvas and give key controls to move it
-      let paddleTwo = new Paddle(350, 150, 150, 100);
+      let paddleTwo = new Paddle(350, 50, 20, 100);
 
       // A function to repeat every time the animation loops.
       function repeatme() {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+        myBall.draw();
+        myBall.move();
+        myBall.rotate();
         paddleOne.draw(ctx);  // Draw the paddle at its current position
         paddleTwo.draw(ctx);
         window.requestAnimationFrame(repeatme);
@@ -221,28 +221,26 @@
 			console.log(e.which);
 			switch (e.which) {
 			// key code for left arrow
-			case 37:
-				console.log('left arrow key pressed!');
-                paddleTwo.move_keyboard(39);
+			case 87:
+				console.log('S key pressed!');
+                paddleTwo.move_keyboard(83);
 				break;
             // key code for up arrow
             case 38:
                 upPressed = true;
 				console.log('up arrow key pressed!');
                 paddleOne.move_keyboard(40);
-                paddleTwo.move_keyboard(40);
 				break;
 			// key code for right arrow
-			case 39:
-				console.log('right arrow key pressed!');
-                paddleTwo.move_keyboard(37);
+			case 83:
+				console.log('W key pressed!');
+                paddleTwo.move_keyboard(87);
 				break;
 			// key code for down arrow
 			case 40:
                 downPressed = true;
 				console.log('down arrow key pressed!');
                 paddleOne.move_keyboard(38);
-                paddleTwo.move_keyboard(38);
 				break;
 			}
 	  });
