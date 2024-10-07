@@ -12,6 +12,7 @@
       }
       canvas{
             border: 10px solid black; /*Draw a black border around the canvas*/
+            pointer-events: none; /* This allows mouse events to pass through to the main canvas */
         }
     </style>
 
@@ -23,10 +24,10 @@
 
     <script type="text/javascript">
 
-      // Gets a handle to the element with id canvasOne.
-      var canvas = document.getElementById("canvas-for-ball");
-      // Get a 2D context for the canvas.
-      var ctx = canvas.getContext("2d");
+      const canvas = document.getElementById("canvas-for-ball");
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "rgb(255, 0, 0)";
+      
       class Ball{
         constructor(xPosition,yPosition,xVelocity,yVelocity,radius){
             this.xPosition=xPosition;// The horizontal location of the ball.
@@ -198,16 +199,15 @@
         y: canvas.offsetTop // Vertical offset from the top side
       };
       
-      canvas.addEventListener("click", function(event) { 
-        //Figure out local mouse coords
-        var mouse = {
-            x: event.clientX - canvasPosition.x,
-            y: event.clientY - canvasPosition.y
-        }
-
-        paddleOne.move(mouse.x,mouse.y);
-        
-        console.log(mouse.x+" :: "+mouse.y);
+      
+      window.addEventListener("mousemove", function (event) {
+        let x = event.clientX;
+        let y = event.clientY;
+        if(canvas.height - y - paddleOne.height <= 0) return;
+        if(y <= canvas.height || (canvas.height - y) <= 0) {
+            paddleOne.yPosition = y;
+            paddleOne.draw(ctx);
+        }    
       });
 
       // Add a Javascript event listener to the keypress event.
