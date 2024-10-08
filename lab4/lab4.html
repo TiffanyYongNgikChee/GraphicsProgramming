@@ -166,16 +166,37 @@
       var paddleOne = new Paddle(20, 250, 5, 2, 20);
       var paddleTwo = new Paddle(480, 250, 5, 2, 20);
 
+      let collisionMessage = '';
+      let collisionMessageTimeout = null;
 
       // A function to detect collisions between the Paddle ball and the “match ball”
       function checkCollisions(){
-        var dist= Math.sqrt(Math.pow(paddleOne.xPosition-myBall.xPosition,2)+Math.pow(paddleOne.yPosition-myBall.yPosition,2));
+        var dist_1= Math.sqrt(Math.pow(paddleOne.xPosition-myBall.xPosition,2)+Math.pow(paddleOne.yPosition-myBall.yPosition,2));
+        var dist_2= Math.sqrt(Math.pow(paddleTwo.xPosition-myBall.xPosition,2)+Math.pow(paddleTwo.yPosition-myBall.yPosition,2));
         //console.log(dist);
 
-        if(dist < paddleOne.radius + myBall.radius){
-            console.log("Collision!");
+        if(dist_1 < paddleOne.radius + myBall.radius||dist_2 < paddleOne.radius + myBall.radius){
+          console.log("Collision!");
+          collisionMessage = "Collision Detected!";
+          // Clear any existing timeout to remove the message
+          if (collisionMessageTimeout) {
+            clearTimeout(collisionMessageTimeout);
+          }
+          // Set a timeout to remove the message after 0.75 seconds
+          collisionMessageTimeout = setTimeout(() => {
+            collisionMessage = ''; // Clear the message
+          }, 750);
         }
 
+      }
+
+      // Function to display the collision message
+      function displayMessage() {
+        if (collisionMessage) {
+          ctx.font = "20px Arial";
+          ctx.fillStyle = "red";
+          ctx.fillText(collisionMessage, canvas.width / 2 - 100, canvas.height / 2);
+        }
       }
 
       // A function to repeat every time the animation loops.
@@ -188,6 +209,7 @@
         myBall.move();
         myBall.rotate();
         checkCollisions();
+        displayMessage();
         window.requestAnimationFrame(repeatme);
       }
 
