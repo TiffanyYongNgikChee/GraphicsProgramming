@@ -113,6 +113,13 @@
             {
                 this.xVelocity=this.xVelocity*-1;
             }
+            
+      
+        }
+        // Method to reverse direction (velocity) upon collision
+        reverseDirection() {
+            this.xVelocity *= -1;
+            this.yVelocity *= -1;
         }
 
         rotate(){
@@ -178,14 +185,20 @@
         if(dist_1 < paddleOne.radius + myBall.radius||dist_2 < paddleOne.radius + myBall.radius){
           console.log("Collision!");
           collisionMessage = "Collision Detected!";
+
+          // Reverse the match ball's velocity upon collision to simulate rebound
+          myBall.reverseDirection();
+
           // Clear any existing timeout to remove the message
           if (collisionMessageTimeout) {
             clearTimeout(collisionMessageTimeout);
           }
+
           // Set a timeout to remove the message after 0.75 seconds
           collisionMessageTimeout = setTimeout(() => {
             collisionMessage = ''; // Clear the message
           }, 750);
+          
         }
 
       }
