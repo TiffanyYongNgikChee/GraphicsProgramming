@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html>
-
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
   <head>
     <meta charset="UTF-8">
     <title>Canvas</title>
@@ -12,6 +12,7 @@
       }
       canvas{
             border: 10px solid black; /*Draw a black border around the canvas*/
+            pointer-events: none; /* This allows mouse events to pass through to the main canvas */
         }
     </style>
 
@@ -19,25 +20,25 @@
 
   <body>
     <h1>Tiffany Yong</h1>
+    
     <canvas id="canvas-for-ball"width="500" height="500"></canvas>
-
     <script type="text/javascript">
 
-      // Gets a handle to the element with id canvasOne.
-      var canvas = document.getElementById("canvas-for-ball");
-      // Get a 2D context for the canvas.
-      var ctx = canvas.getContext("2d");
-
-      class Paddle{
+      const canvas = document.getElementById("canvas-for-ball");
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "rgb(255, 0, 0)";
+      
+      class Ball{
         constructor(xPosition,yPosition,xVelocity,yVelocity,radius){
             this.xPosition=xPosition;// The horizontal location of the ball.
             this.yPosition=yPosition;// The vertical location of the ball.
             this.xVelocity=xVelocity;
             this.yVelocity=yVelocity;
             this.radius=radius;
+            this.rotation=0;
+            this.rotationSpeed = 0.1;  // Initial speed of rotation
         }
 
-        // Modify the Paddle class so that a circle (rather than a rectangle) is drawn
         draw(){
             // Set the stroke color for visibility (black for both the circle and lines).
             ctx.strokeStyle = 'black';
@@ -47,8 +48,43 @@
             ctx.beginPath();
             ctx.arc(this.xPosition, this.yPosition, this.radius, 0, 2 * Math.PI);
             ctx.stroke();
-        }
 
+            // Increment the rotation angle by 0.1 radians for continuous rotation.
+            this.rotation=this.rotation+0.1;
+
+            // Function to convert polar to cartesian coordinates.
+            const polarToCartesian = (radius, angle, centerX, centerY) => {
+                return {
+                    x: centerX + radius * Math.cos(angle),
+                    y: centerY + radius * Math.sin(angle)
+                };
+            };
+
+            // Calculate and draw lines to multiple points on the ball.
+            // 45 degrees (π/4) offset from the current rotation
+            let point1 = polarToCartesian(this.radius, Math.PI / 4 + this.rotation, this.xPosition, this.yPosition);
+            ctx.moveTo(this.xPosition, this.yPosition);
+            ctx.lineTo(point1.x, point1.y);
+            ctx.stroke();
+
+            // 135 degrees (3π/4) offset from the current rotation
+            let point2 = polarToCartesian(this.radius, 3 * Math.PI / 4 + this.rotation, this.xPosition, this.yPosition);
+            ctx.moveTo(this.xPosition, this.yPosition);
+            ctx.lineTo(point2.x, point2.y);
+            ctx.stroke();
+
+            // 90 degrees (π/2) top of the circle
+            let point3 = polarToCartesian(this.radius, Math.PI / 2 + this.rotation, this.xPosition, this.yPosition);
+            ctx.moveTo(this.xPosition, this.yPosition);
+            ctx.lineTo(point3.x, point3.y);
+            ctx.stroke();
+
+            // 270 degrees (3π/2) bottom of the circle
+            let point4 = polarToCartesian(this.radius, 3 * Math.PI / 2 + this.rotation, this.xPosition, this.yPosition);
+            ctx.moveTo(this.xPosition, this.yPosition);
+            ctx.lineTo(point4.x, point4.y);
+            ctx.stroke();
+        }
         move(){
             // Update the y location.
             this.yPosition += this.yVelocity;
@@ -79,39 +115,127 @@
             }
         }
 
+        rotate(){
+            // Increment the rotation by the rotationSpeed.
+            this.rotation += this.rotationSpeed;
+        }
+    }
+      class Paddle{
+        constructor(xPosition,yPosition,xVelocity,yVelocity,radius){
+            this.xPosition=xPosition;// The horizontal location of the ball.
+            this.yPosition=yPosition;// The vertical location of the ball.
+            this.xVelocity=xVelocity;
+            this.yVelocity=yVelocity;
+            this.radius=radius;
+            this.speed = 10;            // Speed for moving the paddle
+        }
+
+        // Method to draw the paddle on the canvas
+        draw(){
+            // Set the stroke color for visibility (black for both the circle and lines).
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2; // Optional: Make the line thicker for visibility
+
+            // Draw the horizontal ball (stroked, not filled).
+            ctx.beginPath();
+            ctx.arc(this.xPosition, this.yPosition, this.radius, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
+
+        move(){
+            
+        }
         move_keyboard(direction){
             switch(direction){
-            // key code for up arrow
-            case 87:
-            case 38:
-                if(this.yPosition + this.speed >= canvas.height - this.height) return;
-                this.yPosition += this.speed;
-				break;
-            // key code for down arrow
-            case 83:
-			case 40:
-                if(this.yPosition - this.speed <= 0) return;
+            case 83: // 'S' key
+            case 40: // Down arrow
+                if(this.yPosition - this.speed <= this.radius) return; // Move up
                 this.yPosition -= this.speed;
-				break;
+                break;
+            case 87: // 'W' key
+            case 38: // Up arrow
+            
+                if(this.yPosition + this.speed >= canvas.height - this.radius) return; // Move down
+                this.yPosition += this.speed;
+                break;
             }
         }
+        
       }
-    
-      PaddleOne = new Paddle(20,20,5,2,20);
+      myBall = new Ball(20,20,5,2,20);
+      var paddleOne = new Paddle(20, 250, 5, 2, 20);
+      var paddleTwo = new Paddle(480, 250, 5, 2, 20);
+
+
+      // A function to detect collisions between the Paddle ball and the “match ball”
+      function checkCollisions(){
+        var dist= Math.sqrt(Math.pow(paddleOne.xPosition-myBall.xPosition,2)+Math.pow(paddleOne.yPosition-myBall.yPosition,2));
+        //console.log(dist);
+
+        if(dist < paddleOne.radius + myBall.radius){
+            console.log("Collision!");
+        }
+
+      }
 
       // A function to repeat every time the animation loops.
       function repeatme() {
-        //clear the entire canvas
-        ctx.clearRect(0,0,500,500);
-        PaddleOne.draw();
-        PaddleOne.move();
-        
-        
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+        myBall.draw();
+        paddleOne.draw();
+        paddleTwo.draw();
+        myBall.move();
+        myBall.rotate();
+        checkCollisions();
         window.requestAnimationFrame(repeatme);
       }
-      
+
       // Get the animation going.
       repeatme();
+
+      // stores these coordinates (x and y) in an object named canvasPosition
+      var canvasPosition = {
+        x: canvas.offsetLeft, // Horizontal offset from the left side
+        y: canvas.offsetTop // Vertical offset from the top side
+      };
+      
+      // Add a Javascript event listener to the keypress event.
+	  window.addEventListener("keydown", function(event) { 
+			// Just log the event to the console.
+			console.log(event);
+	  });
+
+	  //keypresses with jQuery
+	  $(document.body).on('keydown', function(e) {
+			console.log(e.which);
+			switch (e.which) {
+			// key code for left arrow
+			case 87:
+				console.log('S key pressed!');
+                paddleTwo.move_keyboard(83);
+				break;
+            // key code for up arrow
+            case 38:
+                upPressed = true;
+				console.log('up arrow key pressed!');
+                paddleOne.move_keyboard(40);
+				break;
+			// key code for right arrow
+			case 83:
+				console.log('W key pressed!');
+                paddleTwo.move_keyboard(87);
+				break;
+			// key code for down arrow
+			case 40:
+                downPressed = true;
+				console.log('down arrow key pressed!');
+                paddleOne.move_keyboard(38);
+				break;
+			}
+	  });
+      
+      
     </script>
 
   </body>
