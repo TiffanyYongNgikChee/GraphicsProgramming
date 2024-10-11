@@ -131,6 +131,18 @@
             this.yVelocity *= -1;
         }
 
+        // Method to increase ball speed
+        increaseSpeed() {
+            this.xVelocity *= 1.2;  // Increase velocity by 20%
+            this.yVelocity *= 1.2;
+        }
+
+        // Method to decrease ball speed
+        decreaseSpeed() {
+            this.xVelocity *= 0.8;  // Decrease velocity by 20%
+            this.yVelocity *= 0.8;
+        }
+
         rotate(){
             // Increment the rotation by the rotationSpeed.
             this.rotation += this.rotationSpeed;
@@ -300,25 +312,33 @@
 			// key code for left arrow
 			case 87:
 				console.log('S key pressed!');
-                paddleTwo.move_keyboard(83);
+        paddleTwo.move_keyboard(83);
 				break;
             // key code for up arrow
-            case 38:
-                upPressed = true;
+      case 38:
+        upPressed = true;
 				console.log('up arrow key pressed!');
-                paddleOne.move_keyboard(40);
+        paddleOne.move_keyboard(40);
 				break;
 			// key code for right arrow
 			case 83:
 				console.log('W key pressed!');
-                paddleTwo.move_keyboard(87);
+        paddleTwo.move_keyboard(87);
 				break;
 			// key code for down arrow
 			case 40:
-                downPressed = true;
+        downPressed = true;
 				console.log('down arrow key pressed!');
-                paddleOne.move_keyboard(38);
+        paddleOne.move_keyboard(38);
 				break;
+      // '+' key to increase ball speed (key code for '+' on most keyboards)
+      case 187:  
+        myBall.increaseSpeed();
+        break;
+      // '-' key to decrease ball speed (key code for '-' on most keyboards)
+      case 189:  
+        myBall.decreaseSpeed();
+        break;
 			}
 	  });
       
