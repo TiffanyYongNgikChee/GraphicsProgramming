@@ -27,6 +27,10 @@
       const canvas = document.getElementById("canvas-for-ball");
       const ctx = canvas.getContext("2d");
       ctx.fillStyle = "rgb(255, 0, 0)";
+
+      // Initialize scores for each paddle
+      let scorePaddleOne = 0;
+      let scorePaddleTwo = 0;
       
       class Ball{
         constructor(xPosition,yPosition,xVelocity,yVelocity,radius){
@@ -37,6 +41,7 @@
             this.radius=radius;
             this.rotation=0;
             this.rotationSpeed = 0.1;  // Initial speed of rotation
+            
         }
 
         draw(){
@@ -108,10 +113,12 @@
                 console.log("hit top of screen");
                 this.xVelocity=this.xVelocity*-1;
                 this.rotationSpeed *= -1;  // Reverse rotation direction
+                scorePaddleTwo--;  // Decrease score for PaddleTwo when it hits the right wall
             }
             else if(this.xPosition <= this.radius)
             {
                 this.xVelocity=this.xVelocity*-1;
+                scorePaddleOne--;  // Decrease score for PaddleOne when it hits the left wall
             }
             
       
@@ -182,23 +189,31 @@
         var dist_2= Math.sqrt(Math.pow(paddleTwo.xPosition-myBall.xPosition,2)+Math.pow(paddleTwo.yPosition-myBall.yPosition,2));
         //console.log(dist);
 
-        if(dist_1 < paddleOne.radius + myBall.radius||dist_2 < paddleOne.radius + myBall.radius){
-          console.log("Collision!");
+        if (dist_1 < paddleOne.radius + myBall.radius) {
           collisionMessage = "Collision Detected!";
-
-          // Reverse the match ball's velocity upon collision to simulate rebound
           myBall.reverseDirection();
+          scorePaddleOne++;  // Increment score for PaddleOne on collision
 
-          // Clear any existing timeout to remove the message
           if (collisionMessageTimeout) {
             clearTimeout(collisionMessageTimeout);
           }
 
-          // Set a timeout to remove the message after 0.75 seconds
           collisionMessageTimeout = setTimeout(() => {
-            collisionMessage = ''; // Clear the message
+            collisionMessage = '';
           }, 750);
           
+        } else if (dist_2 < paddleTwo.radius + myBall.radius) {
+          collisionMessage = "Collision Detected!";
+          myBall.reverseDirection();
+          scorePaddleTwo++;  // Increment score for PaddleTwo on collision
+
+          if (collisionMessageTimeout) {
+            clearTimeout(collisionMessageTimeout);
+          }
+
+          collisionMessageTimeout = setTimeout(() => {
+            collisionMessage = '';
+          }, 750);
         }
 
       }
@@ -210,6 +225,11 @@
           ctx.fillStyle = "red";
           ctx.fillText(collisionMessage, canvas.width / 2 - 100, canvas.height / 2);
         }
+        // Display the scores for both paddles
+        ctx.font = "20px Arial";
+        ctx.fillStyle = "blue";
+        ctx.fillText("Paddle One: " + scorePaddleOne, 20, 30);
+        ctx.fillText("Paddle Two: " + scorePaddleTwo, canvas.width - 150, 30);
       }
 
       // A function to repeat every time the animation loops.
