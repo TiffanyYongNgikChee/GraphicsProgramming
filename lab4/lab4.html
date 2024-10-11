@@ -146,15 +146,45 @@
             this.speed = 10;            // Speed for moving the paddle
         }
 
-        // Method to draw the paddle on the canvas
+        // Method to draw the paddle on the canvas with some advanced symbol as the Ball Class
         draw(){
             // Set the stroke color for visibility (black for both the circle and lines).
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 2; // Optional: Make the line thicker for visibility
 
-            // Draw the horizontal ball (stroked, not filled).
+            // Draw the "match ball" symbol within the paddle
+            ctx.fillStyle = "yellow"; // Make the symbol a different color
             ctx.beginPath();
             ctx.arc(this.xPosition, this.yPosition, this.radius, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+
+
+            const polarToCartesian = (radius, angle, centerX, centerY) => {
+                return {
+                    x: centerX + radius * Math.cos(angle),
+                    y: centerY + radius * Math.sin(angle)
+                };
+            };
+
+            let point1 = polarToCartesian(this.radius, Math.PI / 4, this.xPosition, this.yPosition);
+            ctx.moveTo(this.xPosition, this.yPosition);
+            ctx.lineTo(point1.x, point1.y);
+            ctx.stroke();
+
+            let point2 = polarToCartesian(this.radius, 3 * Math.PI / 4 , this.xPosition, this.yPosition);
+            ctx.moveTo(this.xPosition, this.yPosition);
+            ctx.lineTo(point2.x, point2.y);
+            ctx.stroke();
+
+            let point3 = polarToCartesian(this.radius, Math.PI / 2 , this.xPosition, this.yPosition);
+            ctx.moveTo(this.xPosition, this.yPosition);
+            ctx.lineTo(point3.x, point3.y);
+            ctx.stroke();
+
+            let point4 = polarToCartesian(this.radius, 3 * Math.PI / 2 , this.xPosition, this.yPosition);
+            ctx.moveTo(this.xPosition, this.yPosition);
+            ctx.lineTo(point4.x, point4.y);
             ctx.stroke();
         }
 
