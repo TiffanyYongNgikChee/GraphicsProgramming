@@ -41,17 +41,19 @@
             this.radius=radius;
             this.rotation=0;
             this.rotationSpeed = 0.1;  // Initial speed of rotation
-            
+            this.color = '#7FC8FF'; // New color property with a default value of "blue"
         }
 
         draw(){
             // Set the stroke color for visibility (black for both the circle and lines).
+            ctx.fillStyle = this.color;
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 2; // Optional: Make the line thicker for visibility
 
             // Draw the horizontal ball (stroked, not filled).
             ctx.beginPath();
             ctx.arc(this.xPosition, this.yPosition, this.radius, 0, 2 * Math.PI);
+            ctx.fill();  // Fill the ball with color
             ctx.stroke();
 
             // Increment the rotation angle by 0.1 radians for continuous rotation.
