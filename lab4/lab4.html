@@ -28,6 +28,9 @@
       const ctx = canvas.getContext("2d");
       ctx.fillStyle = "rgb(255, 0, 0)";
 
+      // Array to store multiple balls
+      let balls = [];
+
       // Initialize scores for each paddle
       let scorePaddleOne = 0;
       let scorePaddleTwo = 0;
@@ -57,7 +60,7 @@
             ctx.stroke();
 
             // Increment the rotation angle by 0.1 radians for continuous rotation.
-            this.rotation=this.rotation+0.1;
+            this.rotation += this.rotationSpeed;
 
             // Function to convert polar to cartesian coordinates.
             const polarToCartesian = (radius, angle, centerX, centerY) => {
@@ -147,6 +150,12 @@
             // Increment the rotation by the rotationSpeed.
             this.rotation += this.rotationSpeed;
         }
+
+        // Check if a point (x, y) is inside the ball (used for mouse click detection)
+        isClicked(x, y) {
+            const dist = Math.sqrt(Math.pow(x - this.xPosition, 2) + Math.pow(y - this.yPosition, 2));
+            return dist <= this.radius;
+        }
     }
       class Paddle{
         constructor(xPosition,yPosition,xVelocity,yVelocity,radius){
@@ -220,46 +229,48 @@
         }
         
       }
-      myBall = new Ball(20,20,5,2,20);
+      // Create paddles (match ball)
       var paddleOne = new Paddle(20, 250, 5, 2, 20);
       var paddleTwo = new Paddle(480, 250, 5, 2, 20);
+
+      // Create initial ball
+      const myBall = new Ball(20, 20, 5, 2, 20);
+      balls.push(myBall); // Add the initial ball to the array
 
       let collisionMessage = '';
       let collisionMessageTimeout = null;
 
       // A function to detect collisions between the Paddle ball and the “match ball”
       function checkCollisions(){
-        var dist_1= Math.sqrt(Math.pow(paddleOne.xPosition-myBall.xPosition,2)+Math.pow(paddleOne.yPosition-myBall.yPosition,2));
-        var dist_2= Math.sqrt(Math.pow(paddleTwo.xPosition-myBall.xPosition,2)+Math.pow(paddleTwo.yPosition-myBall.yPosition,2));
-        //console.log(dist);
+        balls.forEach(ball => {
+              var dist1= Math.sqrt(Math.pow(paddleOne.xPosition-ball.xPosition,2)+Math.pow(paddleOne.yPosition-ball.yPosition,2));
+              var dist2= Math.sqrt(Math.pow(paddleTwo.xPosition-ball.xPosition,2)+Math.pow(paddleTwo.yPosition-ball.yPosition,2));
+              //console.log(dist);
 
-        if (dist_1 < paddleOne.radius + myBall.radius) {
-          collisionMessage = "Collision Detected!";
-          myBall.reverseDirection();
-          scorePaddleOne++;  // Increment score for PaddleOne on collision
+              if (dist1 < paddleOne.radius + ball.radius) {
+                  collisionMessage = "Collision Detected!";
+                  ball.reverseDirection();
+                  scorePaddleOne++; // Increment score for PaddleOne on collision
+                  if (collisionMessageTimeout) {
+                    clearTimeout(collisionMessageTimeout);
+                  }
+                  collisionMessageTimeout = setTimeout(() => {
+                    collisionMessage = '';
+                  }, 750);
+              } 
+              else if (dist2 < paddleTwo.radius + ball.radius){
+                  collisionMessage = "Collision Detected!";
+                  ball.reverseDirection();
+                  scorePaddleTwo++; // Increment score for PaddleTwo on collision
+                  if (collisionMessageTimeout) {
+                    clearTimeout(collisionMessageTimeout);
+                  }
 
-          if (collisionMessageTimeout) {
-            clearTimeout(collisionMessageTimeout);
-          }
-
-          collisionMessageTimeout = setTimeout(() => {
-            collisionMessage = '';
-          }, 750);
-          
-        } else if (dist_2 < paddleTwo.radius + myBall.radius) {
-          collisionMessage = "Collision Detected!";
-          myBall.reverseDirection();
-          scorePaddleTwo++;  // Increment score for PaddleTwo on collision
-
-          if (collisionMessageTimeout) {
-            clearTimeout(collisionMessageTimeout);
-          }
-
-          collisionMessageTimeout = setTimeout(() => {
-            collisionMessage = '';
-          }, 750);
-        }
-
+                  collisionMessageTimeout = setTimeout(() => {
+                    collisionMessage = '';
+                  }, 750);
+              }
+        });
       }
 
       // Function to display the collision message
@@ -298,49 +309,62 @@
         x: canvas.offsetLeft, // Horizontal offset from the left side
         y: canvas.offsetTop // Vertical offset from the top side
       };
-      
-      // Add a Javascript event listener to the keypress event.
-	  window.addEventListener("keydown", function(event) { 
-			// Just log the event to the console.
-			console.log(event);
-	  });
 
-	  //keypresses with jQuery
-	  $(document.body).on('keydown', function(e) {
-			console.log(e.which);
-			switch (e.which) {
-			// key code for left arrow
-			case 87:
-				console.log('S key pressed!');
-        paddleTwo.move_keyboard(83);
-				break;
-            // key code for up arrow
-      case 38:
-        upPressed = true;
-				console.log('up arrow key pressed!');
-        paddleOne.move_keyboard(40);
-				break;
-			// key code for right arrow
-			case 83:
-				console.log('W key pressed!');
-        paddleTwo.move_keyboard(87);
-				break;
-			// key code for down arrow
-			case 40:
-        downPressed = true;
-				console.log('down arrow key pressed!');
-        paddleOne.move_keyboard(38);
-				break;
-      // '+' key to increase ball speed (key code for '+' on most keyboards)
-      case 187:  
-        myBall.increaseSpeed();
-        break;
-      // '-' key to decrease ball speed (key code for '-' on most keyboards)
-      case 189:  
-        myBall.decreaseSpeed();
-        break;
-			}
-	  });
+      // Add the click event listener to the canvas
+      canvas.addEventListener("click", function(event) { 
+        // Get the canvas position relative to the viewport
+        const canvasPosition = canvas.getBoundingClientRect();
+        // Calculate the mouse position on the canvas
+        const mouse = {
+            x: event.clientX - canvasPosition.left,
+            y: event.clientY - canvasPosition.top
+        };
+        // Find if any ball is clicked and remove it from the array if clicked
+        balls = balls.filter(ball => !ball.isClicked(mouse.x, mouse.y));  // Keep balls that were not clicked
+    });
+     
+      // Add a Javascript event listener to the keypress event.
+      window.addEventListener("keydown", function(event) { 
+        // Just log the event to the console.
+        console.log(event);
+      });
+
+      //keypresses with jQuery
+      $(document.body).on('keydown', function(e) {
+        console.log(e.which);
+        switch (e.which) {
+        // key code for left arrow
+        case 87:
+          console.log('S key pressed!');
+          paddleTwo.move_keyboard(83);
+          break;
+              // key code for up arrow
+        case 38:
+          upPressed = true;
+          console.log('up arrow key pressed!');
+          paddleOne.move_keyboard(40);
+          break;
+        // key code for right arrow
+        case 83:
+          console.log('W key pressed!');
+          paddleTwo.move_keyboard(87);
+          break;
+        // key code for down arrow
+        case 40:
+          downPressed = true;
+          console.log('down arrow key pressed!');
+          paddleOne.move_keyboard(38);
+          break;
+        // '+' key to increase ball speed (key code for '+' on most keyboards)
+        case 187:  
+          myBall.increaseSpeed();
+          break;
+        // '-' key to decrease ball speed (key code for '-' on most keyboards)
+        case 189:  
+          myBall.decreaseSpeed();
+          break;
+        }
+      });
       
       
     </script>
