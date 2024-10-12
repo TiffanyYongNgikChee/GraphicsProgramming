@@ -12,7 +12,6 @@
       }
       canvas{
             border: 10px solid black; /*Draw a black border around the canvas*/
-            pointer-events: none; /* This allows mouse events to pass through to the main canvas */
         }
     </style>
 
@@ -291,11 +290,13 @@
       function repeatme() {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-        myBall.draw();
         paddleOne.draw();
         paddleTwo.draw();
-        myBall.move();
-        myBall.rotate();
+        balls.forEach(ball => {
+              ball.draw();
+              ball.move();
+              ball.rotate();
+        });
         checkCollisions();
         displayMessage();
         window.requestAnimationFrame(repeatme);
@@ -310,8 +311,23 @@
         y: canvas.offsetTop // Vertical offset from the top side
       };
 
-      // Add the click event listener to the canvas
+      // Add the double-click to add a new ball at random position
+      canvas.addEventListener('dblclick', function(event) { 
+        // To confirm the dbclick event is working
+        console.log("dbclick");
+        const newBall = new Ball(
+              Math.random() * (canvas.width - 40) + 20, // Random x-position
+              Math.random() * (canvas.height - 40) + 20, // Random y-position
+              (Math.random() - 0.5) * 6,  // Random x-velocity between -3 and 3
+              (Math.random() - 0.5) * 6,  // Random y-velocity between -3 and 3
+              20  // Ball radius
+          );
+          balls.push(newBall);  // Add the new ball to the array
+      });
+      // Add the click event listener to remove a ball if clicked
       canvas.addEventListener("click", function(event) { 
+        // To confirm the click event is working
+        console.log("click"); 
         // Get the canvas position relative to the viewport
         const canvasPosition = canvas.getBoundingClientRect();
         // Calculate the mouse position on the canvas
