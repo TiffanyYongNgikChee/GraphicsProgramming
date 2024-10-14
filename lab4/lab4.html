@@ -215,8 +215,24 @@
             ctx.stroke();
         }
 
-        move(){
-            
+        // Move method with boundary checks
+        move(x, y) {
+            this.xPosition = x - this.radius;
+            this.yPosition = y - this.radius;
+
+            // Ensure the paddle stays inside the canvas
+            if (this.xPosition + this.radius > 500) {
+                this.xPosition = 500 - this.radius;
+            }
+            if (this.xPosition < 0) {
+                this.xPosition = 0;
+            }
+            if (this.yPosition + this.radius > 500) {
+                this.yPosition = 500 - this.radius;
+            }
+            if (this.yPosition < 0) {
+                this.yPosition = 0;
+            }
         }
         move_keyboard(direction){
             switch(direction){
@@ -317,6 +333,24 @@
         x: canvas.offsetLeft, // Horizontal offset from the left side
         y: canvas.offsetTop // Vertical offset from the top side
       };
+
+      // Mouse move event listener to move the paddle based on mouse Y position
+      window.addEventListener("mousemove", function(event) {
+      const canvasPosition = canvas.getBoundingClientRect(); // Get the canvas position relative to the viewport
+      let y = event.clientY - canvasPosition.top; // Calculate the mouse Y position on the canvas
+
+        // Boundary check for paddle movement
+        if (y - paddleOne.radius < 0) {
+            // If the paddle's top goes above the canvas, set it to 0
+            paddleOne.yPosition = paddleOne.radius;
+        } else if (y + paddleOne.radius > canvas.height) {
+            // If the paddle's bottom goes below the canvas, set it to the canvas height
+            paddleOne.yPosition = canvas.height - paddleOne.radius;
+        } else {
+            // Move the paddle based on the mouse position
+            paddleOne.yPosition = y;
+        }
+      });
 
       // Add the double-click to add a new ball at random position
       canvas.addEventListener('dblclick', function(event) { 
