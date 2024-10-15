@@ -20,6 +20,7 @@
         // Create a camera with specified properties.
         var camera = new THREE.PerspectiveCamera(76, window.innerWidth / window.innerHeight, 0.1, 1000);
         // Set camera position
+        camera.position.z = 40;
 
         // Implement renderer - Create a WebGL renderer for rendering the scene.
         var renderer = new THREE.WebGLRenderer();
