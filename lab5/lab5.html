@@ -26,6 +26,11 @@
         var renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
+
+        const geometry = new Three.SphereGeometry(15,32,16);
+        const material = new Three.MeshLamberMaterial({color:0xffff00, wireframe: true});
+        const sphere = new Three.Mesh(geometry, material);
+        scene.add(sphere);
         
     </script>
 </body>
