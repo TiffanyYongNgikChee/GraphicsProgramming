@@ -22,6 +22,8 @@
                 this.material = new THREE.MeshLambertMaterial({color:0xffff00, wireframe: false});
                 // Create a mesh combining the geometry and material, then add it to the scene
                 this.sphere = new THREE.Mesh(this.geometry, this.material);
+                // Enable shadow casting for the sphere
+                this.sphere.castShadow = true;
                 scene.add(this.sphere);
             }
             // Method to update the sphere's rotation
@@ -49,17 +51,31 @@
 
         // Implement renderer - Create a WebGL renderer for rendering the scene.
         var renderer = new THREE.WebGLRenderer();
+        // Enable shadow mapping and set the type to PCFSoftShadowMap
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap; // to antialias the shadow
         // Set the size of the renderer to match the canvas size
         renderer.setSize(canvasWidth, canvasHeight);
         // Append the renderer's canvas element to the document body
         document.body.appendChild(renderer.domElement);
+       
 
         // Create two sphere instances
         s1 = new Sphere();
 
+        // Add a plane to receive the shadow
+        const planeGeometry = new THREE.PlaneGeometry(200, 200);
+        const planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
+        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.rotation.x = -Math.PI / 2; // Rotate the plane to be horizontal
+        plane.position.y = -20; // Position the plane below the sphere
+        plane.receiveShadow = true;
+        scene.add(plane);
+
         // Add a spotlight
-        const light = new THREE.PointLight(0xff0000,1,100); // a red light to the scene
+        const light = new THREE.SpotLight(0xffffff); // a red light to the scene
         light.position.set(50,50,50); //position: x y z
+        light.castShadow = true;
         scene.add(light);
 
         // Add and call a repeatMe() loop function
