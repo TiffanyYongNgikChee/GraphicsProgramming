@@ -17,15 +17,21 @@
         // Implement scene - Create a Three.js scene to hold objects.
         var scene = new THREE.Scene();
 
+        // Set canvas size
+        var canvasWidth = window.innerWidth;
+        var canvasHeight = window.innerHeight;
+
         // Create a camera with specified properties.
         // field of view (80), aspect ratio (canvasWidth / canvasHeight), and clipping planes.
-        var camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 1000);
+        var camera = new THREE.PerspectiveCamera(80, canvasWidth / canvasHeight, 0.1, 1000);
         // Set camera position
         camera.position.z = 50;
 
         // Implement renderer - Create a WebGL renderer for rendering the scene.
         var renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        // Set the size of the renderer to match the canvas size
+        renderer.setSize(canvasWidth, canvasHeight);
+        // Append the renderer's canvas element to the document body
         document.body.appendChild(renderer.domElement);
 
         // Create a sphere geometry with a radius of 15, 32 width, and 16 height
