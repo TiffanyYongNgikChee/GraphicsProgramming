@@ -41,6 +41,17 @@
         // Create a mesh combining the geometry and material, then add it to the scene
         const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
+
+        // Add and call a repeatMe() loop function
+        var repeatMe = function(){
+            //Code to rotate sphere
+            sphere.rotation.x += 0.01;
+            sphere.rotation.y += 0.01;
+
+            renderer.render(scene,camera);
+            requestAnimationFrame(repeatMe);
+        };
+        repeatMe();
         
     </script>
 </body>
