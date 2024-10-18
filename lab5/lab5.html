@@ -17,7 +17,7 @@
         class Sphere{
             constructor(){
                 // Create a sphere geometry with a radius of 15, 32 width, and 16 height
-                this.geometry = new THREE.SphereGeometry(15,32,16);
+                this.geometry = new THREE.SphereGeometry(30,32,16);
                 // Create a material with a yellow color and wireframe mode.
                 this.material = new THREE.MeshLambertMaterial({color:0xffff00, wireframe: false});
                 // Create a mesh combining the geometry and material, then add it to the scene
@@ -25,7 +25,31 @@
                 // Enable shadow casting for the sphere
                 this.sphere.castShadow = true;
                 scene.add(this.sphere);
+
+                // Initial position and velocity
+                this.sphere.position.y = 50; // Start above the plane
+                this.velocity = 0; // Initial velocity
+                this.gravity = -0.2; // Gravity strength
+                this.bounce = 0.7; // Energy retained after bounce
+                this.radius = 30; // Sphere radius
             }
+
+            // Method to update the sphere's position with gravity and bounce
+            update() {
+                // Apply gravity to velocity
+                this.velocity += this.gravity;
+                // Move the sphere down
+                this.sphere.position.y += this.velocity;
+
+                // Check for collision with the plane (y=0)
+                if (this.sphere.position.y - 15 <= 0) {
+                    // Bounce: invert velocity and apply bounce factor
+                    this.velocity = -this.velocity * this.bounce;
+                    // Make sure the sphere does not go below the plane
+                    this.sphere.position.y = 15;
+                }
+            }
+
             // Method to update the sphere's rotation
             rotate(xSpeed, ySpeed) {
                 this.sphere.rotation.x += xSpeed;
@@ -36,6 +60,7 @@
                 this.sphere.position.x += xSpeed;
             }
         }
+
         // Implement scene - Create a Three.js scene to hold objects.
         var scene = new THREE.Scene();
 
@@ -47,7 +72,7 @@
         // field of view (80), aspect ratio (canvasWidth / canvasHeight), and clipping planes.
         var camera = new THREE.PerspectiveCamera(80, canvasWidth / canvasHeight, 0.1, 1000);
         // Set camera position
-        camera.position.z = 50;
+        camera.position.z = 100;
 
         // Implement renderer - Create a WebGL renderer for rendering the scene.
         var renderer = new THREE.WebGLRenderer();
@@ -64,20 +89,20 @@
         s1 = new Sphere();
 
         // Add a plane to receive the shadow
-        const planeGeometry = new THREE.PlaneGeometry(200, 200);
+        const planeGeometry = new THREE.PlaneGeometry(300, 100);
         const planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
         const plane = new THREE.Mesh(planeGeometry, planeMaterial);
         plane.rotation.x = -Math.PI / 2; // Rotate the plane to be horizontal
-        plane.position.y = -20; // Position the plane below the sphere
+        plane.position.y = -15; // Position the plane below the sphere
         plane.receiveShadow = true;
         scene.add(plane);
 
         // Add a spotlight
-        const light = new THREE.SpotLight(0xffffff); // a red light to the scene
+        const light = new THREE.SpotLight(0xffffff,1); // a red light to the scene
         light.position.set(50,50,50); //position: x y z
         light.castShadow = true;
         scene.add(light);
-        
+
         // Add a camera helper to illustrate source of light
         var helper = new THREE.CameraHelper(light.shadow.camera);
         scene.add(helper);
@@ -87,6 +112,8 @@
             // Rotate and move the first sphere
             s1.rotate(0.01, 0.01);
             s1.move(0.1);
+            // Update the sphere's position
+            s1.update();
 
             renderer.render(scene,camera);
             requestAnimationFrame(repeatMe);
