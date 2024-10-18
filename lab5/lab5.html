@@ -37,7 +37,7 @@
         // Create a sphere geometry with a radius of 15, 32 width, and 16 height
         const geometry = new THREE.SphereGeometry(15,32,16);
         // Create a material with a yellow color and wireframe mode.
-        const material = new THREE.MeshBasicMaterial({color:0xffff00, wireframe: true});
+        const material = new THREE.MeshBasicMaterial({color:0xffff00, wireframe: false});
         // Create a mesh combining the geometry and material, then add it to the scene
         const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
