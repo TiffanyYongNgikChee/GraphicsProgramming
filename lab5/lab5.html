@@ -13,7 +13,27 @@
 <body>
     <h1>Tiffany Yong</h1>
     <script type="text/javascript">
-        
+        //Encapsulate sphere as a class/object
+        class Sphere{
+            constructor(){
+                // Create a sphere geometry with a radius of 15, 32 width, and 16 height
+                this.geometry = new THREE.SphereGeometry(15,32,16);
+                // Create a material with a yellow color and wireframe mode.
+                this.material = new THREE.MeshLambertMaterial({color:0xffff00, wireframe: false});
+                // Create a mesh combining the geometry and material, then add it to the scene
+                this.sphere = new THREE.Mesh(this.geometry, this.material);
+                scene.add(this.sphere);
+            }
+            // Method to update the sphere's rotation
+            rotate(xSpeed, ySpeed) {
+                this.sphere.rotation.x += xSpeed;
+                this.sphere.rotation.y += ySpeed;
+            }
+            // Method to update the sphere's position
+            move(xSpeed) {
+                this.sphere.position.x += xSpeed;
+            }
+        }
         // Implement scene - Create a Three.js scene to hold objects.
         var scene = new THREE.Scene();
 
@@ -34,13 +54,8 @@
         // Append the renderer's canvas element to the document body
         document.body.appendChild(renderer.domElement);
 
-        // Create a sphere geometry with a radius of 15, 32 width, and 16 height
-        const geometry = new THREE.SphereGeometry(15,32,16);
-        // Create a material with a yellow color and wireframe mode.
-        const material = new THREE.MeshLambertMaterial({color:0xffff00, wireframe: false});
-        // Create a mesh combining the geometry and material, then add it to the scene
-        const sphere = new THREE.Mesh(geometry, material);
-        scene.add(sphere);
+        // Create two sphere instances
+        s1 = new Sphere();
 
         // Add a spotlight
         const light = new THREE.PointLight(0xff0000,1,100); // a red light to the scene
@@ -49,11 +64,9 @@
 
         // Add and call a repeatMe() loop function
         var repeatMe = function(){
-            //Code to rotate sphere
-            sphere.rotation.x += 0.01;
-            sphere.rotation.y += 0.01;
-            //Sphere movement from left to right
-            sphere.position.x += 0.1;
+            // Rotate and move the first sphere
+            s1.rotate(0.01, 0.01);
+            s1.move(0.1);
 
             renderer.render(scene,camera);
             requestAnimationFrame(repeatMe);
