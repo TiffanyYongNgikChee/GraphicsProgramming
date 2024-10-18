@@ -77,6 +77,10 @@
         light.position.set(50,50,50); //position: x y z
         light.castShadow = true;
         scene.add(light);
+        
+        // Add a camera helper to illustrate source of light
+        var helper = new THREE.CameraHelper(light.shadow.camera);
+        scene.add(helper);
 
         // Add and call a repeatMe() loop function
         var repeatMe = function(){
