@@ -42,6 +42,11 @@
         const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
 
+        // Add a spotlight
+        const light = new THREE.PointLight(0xff0000,1,100); // a red light to the scene
+        light.position.set(50,50,50); //position: x y z
+        scene.add(light);
+
         // Add and call a repeatMe() loop function
         var repeatMe = function(){
             //Code to rotate sphere
