@@ -27,9 +27,9 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        const geometry = new Three.SphereGeometry(15,32,16);
-        const material = new Three.MeshLamberMaterial({color:0xffff00, wireframe: true});
-        const sphere = new Three.Mesh(geometry, material);
+        const geometry = new THREE.SphereGeometry(15,32,16);
+        const material = new THREE.MeshBasicMaterial({color:0xffff00, wireframe: true});
+        const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
         
     </script>
