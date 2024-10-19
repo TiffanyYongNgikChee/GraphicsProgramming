@@ -47,7 +47,7 @@
                     // Bounce: invert velocity and apply bounce factor
                     this.velocity = -this.velocity * this.bounce;
                     // Make sure the sphere does not go below the plane
-                    this.sphere.position.y = 15;
+                    this.sphere.position.y = this.radius/2;
                 }
             }
 
@@ -59,6 +59,10 @@
             // Method to update the sphere's position
             move(xSpeed) {
                 this.sphere.position.x += xSpeed;
+            }
+            // Method to reverse the direction of the velocity
+            reverseDirection() {
+                //this.velocity *= -1; // Reverse velocity direction
             }
         }
 
@@ -90,6 +94,9 @@
         s1 = new Sphere(-30,50,0xffff00); // Yellow sphere
         s2 = new Sphere(-50, 20, 0xff0000); // Red sphere
 
+        // Array to store spheres
+        var balls = [s2, s1];
+
         // Add a plane to receive the shadow
         const planeGeometry = new THREE.PlaneGeometry(300, 100);
         const planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
@@ -111,7 +118,26 @@
 
         // A function to detect collisions between the spheres
         function checkCollisions(){
-
+            // Loop through each pair of spheres in the "balls" array
+            for (let i = 0; i < balls.length; i++) {
+                for (let j = i + 1; j < balls.length; j++) {
+                    // Get the current pair of spheres
+                    const ball1 = balls[i];
+                    const ball2 = balls[j];
+                    // Calculate the distance between the two spheres
+                    var dist = Math.sqrt(
+                        Math.pow(ball1.sphere.position.x - ball2.sphere.position.x, 2) +
+                        Math.pow(ball1.sphere.position.y - ball2.sphere.position.y, 2)
+                    );
+                    // Check if the distance is less than the sum of the radii (collision detected)
+                    if (dist < ball1.radius + ball2.radius) {
+                        // If a collision is detected, reverse the direction of both spheres
+                        ball1.reverseDirection();
+                        ball2.reverseDirection();
+                        console.log("Collision"); //for debugging purpose
+                    }
+                }
+            }
         }
 
         // Add and call a repeatMe() loop function
@@ -124,7 +150,8 @@
             // Update the sphere's position
             s1.update();
             s2.update();
-
+            // Check for collisions between the spheres
+            checkCollisions();
             renderer.render(scene,camera);
             requestAnimationFrame(repeatMe);
         };
