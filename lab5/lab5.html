@@ -26,9 +26,14 @@
                 this.sphere.castShadow = true;
                 scene.add(this.sphere);
 
+                // Create a wireframe mesh using the same geometry
+                this.wireframeMaterial = new THREE.MeshLambertMaterial({ color: 0x000000, wireframe: true });
+                this.wireframe = new THREE.Mesh(this.geometry, this.wireframeMaterial);
+                this.sphere.add(this.wireframe); // Add wireframe as a child of the sphere mesh
+
                 // Initial position and velocity
                 this.sphere.position.set(xPosition, yPosition, 0); // Start above the plane
-                this.velocity = new THREE.Vector3(xVelocity, 0, 0.3); // Initial velocity as a vector
+                this.velocity = new THREE.Vector3(xVelocity, 0.5, 0.3); // Initial velocity as a vector
                 this.gravity = new THREE.Vector3(0, -0.1, 0); // Gravity strength
                 this.bounce = 0.78 // Energy retained after bounce
                 this.radius = 30; // Sphere radius
