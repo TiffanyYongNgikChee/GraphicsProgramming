@@ -15,11 +15,11 @@
     <script type="text/javascript">
         //Encapsulate sphere as a class/object
         class Sphere{
-            constructor(){
+            constructor(xPosition,yPosition,color){
                 // Create a sphere geometry with a radius of 15, 32 width, and 16 height
                 this.geometry = new THREE.SphereGeometry(30,32,16);
                 // Create a material with a yellow color and wireframe mode.
-                this.material = new THREE.MeshLambertMaterial({color:0xffff00, wireframe: false});
+                this.material = new THREE.MeshLambertMaterial({color:color, wireframe: false});
                 // Create a mesh combining the geometry and material, then add it to the scene
                 this.sphere = new THREE.Mesh(this.geometry, this.material);
                 // Enable shadow casting for the sphere
@@ -27,7 +27,8 @@
                 scene.add(this.sphere);
 
                 // Initial position and velocity
-                this.sphere.position.y = 50; // Start above the plane
+                this.sphere.position.x = xPosition; 
+                this.sphere.position.y = yPosition; // Start above the plane
                 this.velocity = 0; // Initial velocity
                 this.gravity = -0.2; // Gravity strength
                 this.bounce = 0.7; // Energy retained after bounce
@@ -86,7 +87,8 @@
        
 
         // Create two sphere instances
-        s1 = new Sphere();
+        s1 = new Sphere(-30,50,0xffff00); // Yellow sphere
+        s2 = new Sphere(-50, 20, 0xff0000); // Red sphere
 
         // Add a plane to receive the shadow
         const planeGeometry = new THREE.PlaneGeometry(300, 100);
@@ -107,13 +109,21 @@
         var helper = new THREE.CameraHelper(light.shadow.camera);
         scene.add(helper);
 
+        // A function to detect collisions between the spheres
+        function checkCollisions(){
+
+        }
+
         // Add and call a repeatMe() loop function
         var repeatMe = function(){
             // Rotate and move the first sphere
             s1.rotate(0.01, 0.01);
             s1.move(0.1);
+            s2.rotate(0.01, 0.01);
+            s2.move(0.1);
             // Update the sphere's position
             s1.update();
+            s2.update();
 
             renderer.render(scene,camera);
             requestAnimationFrame(repeatMe);
