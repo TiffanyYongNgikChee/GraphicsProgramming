@@ -15,7 +15,7 @@
     <script type="text/javascript">
         //Encapsulate sphere as a class/object
         class Sphere{
-            constructor(xPosition,yPosition,color){
+            constructor(xPosition,yPosition,color,xVelocity){
                 // Create a sphere geometry with a radius of 15, 32 width, and 16 height
                 this.geometry = new THREE.SphereGeometry(30,32,16);
                 // Create a material with a yellow color and wireframe mode.
@@ -27,10 +27,9 @@
                 scene.add(this.sphere);
 
                 // Initial position and velocity
-                this.sphere.position.x = xPosition; 
-                this.sphere.position.y = yPosition; // Start above the plane
-                this.velocity = 0; // Initial velocity
-                this.gravity = -0.1; // Gravity strength
+                this.sphere.position.set(xPosition, yPosition, 0); // Start above the plane
+                this.velocity = new THREE.Vector3(xVelocity, 0, 0); // Initial velocity as a vector
+                this.gravity = new THREE.Vector3(0, -0.1, 0); // Gravity strength
                 this.bounce = 0.7; // Energy retained after bounce
                 this.radius = 30; // Sphere radius
             }
@@ -38,14 +37,14 @@
             // Method to update the sphere's position with gravity and bounce
             update() {
                 // Apply gravity to velocity
-                this.velocity += this.gravity;
-                // Move the sphere down
-                this.sphere.position.y += this.velocity;
+                this.velocity.add(this.gravity);
+                // Move the sphere based on velocity
+                this.sphere.position.add(this.velocity);
 
                 // Check for collision with the plane (y=0)
                 if (this.sphere.position.y - 15 <= 0) {
                     // Bounce: invert velocity and apply bounce factor
-                    this.velocity = -this.velocity * this.bounce;
+                    this.velocity.y = -this.velocity.y * this.bounce;
                     // Make sure the sphere does not go below the plane
                     this.sphere.position.y = this.radius/2;
                 }
@@ -58,11 +57,12 @@
             }
             // Method to update the sphere's position
             move(xSpeed) {
-                this.sphere.position.x += xSpeed;
+                this.sphere.position.add(this.velocity);
             }
             // Method to reverse the direction of the velocity
             reverseDirection() {
-                //this.velocity *= -1; // Reverse velocity direction
+                this.velocity.x *= -1; // Reverse velocity in the x-direction
+                this.velocity.y *= -1; // Reverse velocity in the y-direction
             }
         }
 
@@ -91,8 +91,8 @@
        
 
         // Create two sphere instances
-        s1 = new Sphere(-30,50,0xffff00); // Yellow sphere
-        s2 = new Sphere(-50, 20, 0xff0000); // Red sphere
+        s1 = new Sphere(-30,50,0xffff00,0.5); // Yellow sphere
+        s2 = new Sphere(50, 20, 0xff0000,0.2); // Red sphere
 
         // Array to store spheres
         var balls = [s2, s1];
@@ -132,8 +132,8 @@
                     // Check if the distance is less than the sum of the radii (collision detected)
                     if (dist < ball1.radius + ball2.radius) {
                         // If a collision is detected, reverse the direction of both spheres
-                        ball1.reverseDirection();
-                        ball2.reverseDirection();
+                        ball2.velocity.x = -ball2.velocity.x;
+                        ball2.velocity.y = -ball2.velocity.y;
                         console.log("Collision"); //for debugging purpose
                     }
                 }
@@ -144,14 +144,13 @@
         var repeatMe = function(){
             // Rotate and move the first sphere
             s1.rotate(0.01, 0.01);
-            s1.move(0.1);
             s2.rotate(0.01, 0.01);
-            s2.move(0.1);
             // Update the sphere's position
             s1.update();
             s2.update();
             // Check for collisions between the spheres
             checkCollisions();
+            
             renderer.render(scene,camera);
             requestAnimationFrame(repeatMe);
         };
