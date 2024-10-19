@@ -28,24 +28,41 @@
 
                 // Initial position and velocity
                 this.sphere.position.set(xPosition, yPosition, 0); // Start above the plane
-                this.velocity = new THREE.Vector3(xVelocity, 0, 0); // Initial velocity as a vector
+                this.velocity = new THREE.Vector3(xVelocity, 0, 0.3); // Initial velocity as a vector
                 this.gravity = new THREE.Vector3(0, -0.1, 0); // Gravity strength
-                this.bounce = 0.7; // Energy retained after bounce
+                this.bounce = 0.78 // Energy retained after bounce
                 this.radius = 30; // Sphere radius
             }
 
             // Method to update the sphere's position with gravity and bounce
             update() {
+                
                 // Apply gravity to velocity
                 this.velocity.add(this.gravity);
                 // Move the sphere based on velocity
                 this.sphere.position.add(this.velocity);
+
+                // Check for collision with the cube walls
+                const halfWidth = 150;
+                const halfHeight = 50;
+                const halfDepth = 40;
+                
                 // Check for collision with the plane (y=0)
                 if (this.sphere.position.y - 15 <= 0) {
                     // Bounce: invert velocity and apply bounce factor
                     this.velocity.y = -this.velocity.y * this.bounce;
                     // Make sure the sphere does not go below the plane
                     this.sphere.position.y = this.radius/2;
+                }
+                // Bounce off the left and right walls
+                if (this.sphere.position.x + this.radius/2 > halfWidth|| this.sphere.position.x - this.radius/2 < -halfWidth) {
+                    console.log("collision");
+                    this.velocity.x *= -1; 
+                }
+                // Bounce off the front and back walls
+                if (this.sphere.position.z + this.radius/2 > halfDepth || this.sphere.position.z - this.radius/2 < -halfDepth) {
+                    console.log("collision");
+                    this.velocity.z *= -1; 
                 }
             }
 
@@ -106,7 +123,7 @@
         scene.add(plane);
 
         // Add a transparent cube to act as boundaries
-        const cubeGeometry = new THREE.BoxGeometry(300, 100,190);
+        const cubeGeometry = new THREE.BoxGeometry(300, 100,200);
         const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xE0FFFF, transparent: true, opacity: 0.2 });
         const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
         cube.position.y=35;
@@ -142,6 +159,8 @@
                         // If a collision is detected, reverse the direction of both spheres
                         ball2.velocity.x = -ball2.velocity.x;
                         ball2.velocity.y = -ball2.velocity.y;
+                        ball1.velocity.x = -ball1.velocity.x;
+                        ball1.velocity.y = -ball1.velocity.y;
                         console.log("Collision"); //for debugging purpose
                     }
                 }
