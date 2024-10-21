@@ -26,20 +26,21 @@
                 this.sphere.castShadow = true;
                 scene.add(this.sphere);
 
-                // Create a wireframe mesh using the same geometry
-                this.wireframeMaterial = new THREE.MeshLambertMaterial({ color: 0x000000, wireframe: true });
+                // Create a wireframe mesh using the same geometry to show an outline effect
+                this.wireframeMaterial = new THREE.MeshLambertMaterial({ color: 0x912C2C, wireframe: true });
                 this.wireframe = new THREE.Mesh(this.geometry, this.wireframeMaterial);
-                this.sphere.add(this.wireframe); // Add wireframe as a child of the sphere mesh
+                // Add wireframe as a child of the sphere mesh
+                this.sphere.add(this.wireframe); 
 
-                // Initial position and velocity
+                 // Set the initial position and velocity of the sphere
                 this.sphere.position.set(xPosition, yPosition, 0); // Start above the plane
-                this.velocity = new THREE.Vector3(xVelocity, 0.5, 0.3); // Initial velocity as a vector
+                this.velocity = new THREE.Vector3(xVelocity, 0.5, 0.6); // Initial velocity as a vector
                 this.gravity = new THREE.Vector3(0, -0.1, 0); // Gravity strength
                 this.bounce = 0.78 // Energy retained after bounce
-                this.radius = 30; // Sphere radius
+                this.radius = 30; // Radius of the sphere for collision detection
             }
 
-            // Method to update the sphere's position with gravity and bounce
+            // Method to update the sphere's position with gravity, and collision responses
             update() {
                 
                 // Apply gravity to velocity
@@ -61,13 +62,13 @@
                 }
                 // Bounce off the left and right walls
                 if (this.sphere.position.x + this.radius/2 > halfWidth|| this.sphere.position.x - this.radius/2 < -halfWidth) {
-                    console.log("collision");
-                    this.velocity.x *= -1; 
+                    console.log("collision"); // Log the collision for debugging purposes
+                    this.velocity.x *= -1; // Reverse the x-velocity upon collision
                 }
                 // Bounce off the front and back walls
                 if (this.sphere.position.z + this.radius/2 > halfDepth || this.sphere.position.z - this.radius/2 < -halfDepth) {
-                    console.log("collision");
-                    this.velocity.z *= -1; 
+                    console.log("collision"); // Log the collision for debugging purposes
+                    this.velocity.z *= -1; // Reverse the z-velocity upon collision
                 }
             }
 
@@ -90,7 +91,7 @@
         // Implement scene - Create a Three.js scene to hold objects.
         var scene = new THREE.Scene();
 
-        // Set canvas size
+        // Set canvas size based on the window dimensions
         var canvasWidth = window.innerWidth;
         var canvasHeight = window.innerHeight;
 
@@ -112,34 +113,34 @@
        
 
         // Create two sphere instances
-        s1 = new Sphere(-30,50,0xFFC0CB,0.5); // Yellow sphere
-        s2 = new Sphere(50, 20, 0xC71585,0.2); // Red sphere
+        s1 = new Sphere(-30,50,0xFFC0CB,0.5); // Pink sphere
+        s2 = new Sphere(50, 20, 0xC71585,0.2); // Dark red sphere
 
         // Array to store spheres
         var balls = [s2, s1];
 
-        // Add a plane to receive the shadow
+        // Add a plane to act as the ground and receive shadows
         const planeGeometry = new THREE.PlaneGeometry(300, 100);
         const planeMaterial = new THREE.MeshStandardMaterial({ color: 0xAFEEEE });
         const plane = new THREE.Mesh(planeGeometry, planeMaterial);
         plane.rotation.x = -Math.PI / 2; // Rotate the plane to be horizontal
         plane.position.y = -15; // Position the plane below the sphere
-        plane.receiveShadow = true;
+        plane.receiveShadow = true; // Enable shadow receiving
         scene.add(plane);
 
         // Add a transparent cube to act as boundaries
         const cubeGeometry = new THREE.BoxGeometry(300, 100,200);
         const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xE0FFFF, transparent: true, opacity: 0.2 });
         const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.position.y=35;
-        cube.position.z=-50;
+        cube.position.y=35;// Raise the cube up
+        cube.position.z=-50;// Move it backward
         cube.receiveShadow = true;
         scene.add(cube);
 
-        // Add a spotlight
+        // Add a spotlight to illuminate the scene and cast shadows
         const light = new THREE.SpotLight(0xffffff,2); // a red light to the scene
         light.position.set(-150,200,50); //position: x y z
-        light.castShadow = true;
+        light.castShadow = true;// Enable shadow casting
         scene.add(light);
 
         // Add a camera helper to illustrate source of light
@@ -182,7 +183,7 @@
             s2.update();
             // Check for collisions between the spheres
             checkCollisions();
-            
+            // Render the scene with the camera
             renderer.render(scene,camera);
             requestAnimationFrame(repeatMe);
         };
