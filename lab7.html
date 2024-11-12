@@ -58,6 +58,10 @@
                         .append("svg")
                             .attr("width",width + margin.left + margin.right)
                             .attr("height",height + margin.top + margin.bottom)
+                        .append("g")
+                        //adds an offset
+                        .attr("transform","translate(" + margin.left + ","+margin.top+")")
+                        //.attr("transform","translate(" + margin.right + ","+margin.bottom+")");
                     
                     //add axes and the line object to the SVG
                     svg.append('g') //append a <g> - group element
@@ -68,9 +72,10 @@
                         .call(yAxis);
                     svg.append("path") //Add the valueline path
                         .attr("d",valueLine(data))
-                        .attr("stroke", "red")
+                        .attr("stroke", "red") //Make the graph line red
                         .attr("stroke-width", 2)
                         .attr("fill", "none");
+                    
                 }
             </script>
         </body>
