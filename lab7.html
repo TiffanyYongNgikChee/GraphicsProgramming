@@ -36,8 +36,17 @@
                         .range([height,0]); //seems backwards because svg y is down
                     var x = d3.scaleLinear()
                         .domain(d3.extent(data,function(d){ return (d["years_before_2023"]);})) //CO2 values
-                        .range([0,width]);
-               
+                        .range([0,width]);  
+                    //parse the data / time
+                    //var parseDate = d3.timeParse(''); //converts string to a date object day/month
+                    
+                    //Create axis(x and y) and line (d3.line()) objects - specify number of ticks in the axis
+                    //x us the d3.scaleTime()
+                    var xAxis = d3.axisBottom(x)
+                        .ticks(3);//specify the number of ticks
+                    //y is the d3.scaleLinear
+                    var yAxis = d3.axisLeft(y)
+                        .ticks(3);//specify the number of ticks
                 }
             </script>
         </body>
