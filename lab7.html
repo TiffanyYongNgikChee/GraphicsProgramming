@@ -6,10 +6,30 @@
             <!-- Include D3.js (v5) and jQuery using CDN links -->
             <script src="https://d3js.org/d3.v5.min.js"></script>
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            
+
             <style type="text/css"></style>
         </head>
         <body>
-            <script type="text/javascript"></script>
+            <!-- HTML Content -->
+            <h1>Tiffany Yong</h1>
+            <!-- JavaScript Section -->
+            <script type="text/javascript">
+                console.log("D3 and jQuery are successfully loaded.");
+                $.getJSON("https://tinyurl.com/k4chnujx", function(data)
+                {
+                    //print to console
+                    console.log(data);
+                    //call function
+                    plotCO2Data(data);
+                });
+
+                //Executed once the file has downloaded
+                function plotCO2Data(data){
+                    //Set up SVG size and margins
+                    var margin = { top: 50, right: 50, bottom: 50, left:50},
+                        width = 900 - margin.left - margin.right,
+                        height = 670 - margin.top - margin.bottom;
+                }
+            </script>
         </body>
     </html>
