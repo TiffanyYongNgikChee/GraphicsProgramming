@@ -60,12 +60,12 @@
                             .attr("height",height + margin.top + margin.bottom)
                         .append("g")
                         //adds an offset
-                        .attr("transform","translate(" + margin.left + ","+margin.top+")")
-                        //.attr("transform","translate(" + margin.right + ","+margin.bottom+")");
+                        .attr("transform","translate(" + margin.left + ","+margin.top+")");
                     
                     //add axes and the line object to the SVG
                     svg.append('g') //append a <g> - group element
                         .attr('class','x axis')
+                        .attr("transform", "translate(0," + height + ")")
                         .call(xAxis); //let the axis do its thing
                     svg.append('g')
                         .attr('class','y axis') //specity classes
