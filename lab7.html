@@ -54,6 +54,9 @@
                     var y2 = d3.scaleLinear()
                         .domain(d3.extent(data, function(d) { return d["temp_anomaly"]; }))
                         .range([height, 0]);
+                    var x2 = d3.scaleLinear()
+                        .domain(d3.extent(data,function(d){ return (d["ch4_ppb"]);})) //CO2 values
+                        .range([height,0]);  
                     
                     
                     //Create axis(x and y) - specify number of ticks in the axis
@@ -76,6 +79,11 @@
                     var valueLineRight = d3.line()
                         .x(function(d) { return x(d["years_before_2023"]); })
                         .y(function(d) { return y2(d["temp_anomaly"]); });
+                    
+                    // Line generator for methane lines
+                    var valueLineMethane = d3.line()
+                        .x(function(d) { return x(d["years_before_2023"]); })
+                        .y(function(d) { return x2(d["ch4_ppb"]); });
 
                     //Append an SVG element to the webpage
                     var svg = d3.select('body')
@@ -116,10 +124,17 @@
                         .attr("stroke-width", 2)
                         .attr("fill", "none");
                     
-                    // Optional: Draw line for secondary y-axis data
+                    // Draw line for secondary y-axis data
                     svg.append("path")
                         .attr("d", valueLineRight(data))
                         .attr("stroke", "blue") // Color for secondary y-axis line
+                        .attr("stroke-width", 2)
+                        .attr("fill", "none");
+
+                    // Draw line for Methane
+                    svg.append("path")
+                        .attr("d", valueLineMethane(data))
+                        .attr("stroke", "black") // Color for secondary y-axis line
                         .attr("stroke-width", 2)
                         .attr("fill", "none");
                     
