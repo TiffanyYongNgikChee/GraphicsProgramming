@@ -52,6 +52,13 @@
                     var valueLine = d3.line() //draw line - map x,y coords for each data point using the scales
                         .x(function(d){return x(d["years_before_2023"])}) 
                         .y(function(d){return y(d["co2_ppmv"])});
+
+                    //Append an SVG element to the webpage
+                    var svg = d3.select('body')
+                        .append("svg")
+                            .attr("width",width + margin.left + margin.right)
+                            .attr("height",height + margin.top + margin.bottom)
+                            
                 }
             </script>
         </body>
