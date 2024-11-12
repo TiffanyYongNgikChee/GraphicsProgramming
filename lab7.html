@@ -10,12 +10,12 @@
             <style type="text/css">
                 /* Style to make axis labels bigger */
                 .axis-label {
-                    font-size: 16px;
+                    font-size: 20px;
                     font-weight: bold;
                 }
                 /* Style for chart title */
                 .chart-title {
-                    font-size: 24px;
+                    font-size: 25px;
                     font-weight: bold;
                     text-anchor: middle;
                 }
@@ -39,6 +39,7 @@
                 function plotCO2Data(data){
                     //Set up SVG size and margins
                     var margin = { top: 50, right: 50, bottom: 50, left:80},
+                        margin2 = { top: 430, right: 20, bottom: 30, left:40},
                         width = 900 - margin.left - margin.right,
                         height = 670 - margin.top - margin.bottom;
 
@@ -49,19 +50,32 @@
                     var x = d3.scaleLinear()
                         .domain(d3.extent(data,function(d){ return (d["years_before_2023"]);})) //CO2 values
                         .range([0,width]);  
+                    // Create secondary y-scale for another variable - temperature (right axis)
+                    var y2 = d3.scaleLinear()
+                        .domain(d3.extent(data, function(d) { return d["temp_anomaly"]; }))
+                        .range([height, 0]);
+                    
                     
                     //Create axis(x and y) - specify number of ticks in the axis
-                    //x us the d3.scaleTime()
+                    //x us the d3.scaleLinear()
                     var xAxis = d3.axisBottom(x)
                         .ticks(3);//specify the number of ticks
                     //y is the d3.scaleLinear
                     var yAxis = d3.axisLeft(y)
                         .ticks(3);//specify the number of ticks
+                    //y2(temperature)
+                    var yAxis2 = d3.axisRight(y2)
+                        .ticks(3);
                
                     //Create line (d3.line()) objects
                     var valueLine = d3.line() //draw line - map x,y coords for each data point using the scales
                         .x(function(d){return x(d["years_before_2023"])}) 
                         .y(function(d){return y(d["co2_ppmv"])});
+
+                    // Line generator for secondary y-axis
+                    var valueLineRight = d3.line()
+                        .x(function(d) { return x(d["years_before_2023"]); })
+                        .y(function(d) { return y2(d["temp_anomaly"]); });
 
                     //Append an SVG element to the webpage
                     var svg = d3.select('body')
@@ -85,12 +99,27 @@
                         .attr('class','x axis')
                         .attr("transform", "translate(0," + height + ")")
                         .call(xAxis); //let the axis do its thing
+
                     svg.append('g')
                         .attr('class','y axis') //specity classes
                         .call(yAxis);
+                    
+                    // Append secondary y-axis (right)
+                    svg.append('g')
+                        .attr('class', 'y axis')
+                        .attr("transform", "translate(" + width + ",0)")
+                        .call(yAxis2);
+                    
                     svg.append("path") //Add the valueline path
                         .attr("d",valueLine(data))
                         .attr("stroke", "red") //Make the graph line red
+                        .attr("stroke-width", 2)
+                        .attr("fill", "none");
+                    
+                    // Optional: Draw line for secondary y-axis data
+                    svg.append("path")
+                        .attr("d", valueLineRight(data))
+                        .attr("stroke", "blue") // Color for secondary y-axis line
                         .attr("stroke-width", 2)
                         .attr("fill", "none");
                     
@@ -109,6 +138,15 @@
                         .attr("transform", "rotate(-90)")
                         .attr("text-anchor", "middle")
                         .text("Atmospheric CO2 Level");
+                    
+                    // Add y-axis label for secondary variable (right axis)
+                    svg.append("text")
+                        .attr("class", "y label axis-label")
+                        .attr("y", -width -30)
+                        .attr("x", height / 2)
+                        .attr("transform", "rotate(90)")
+                        .attr("text-anchor", "middle")
+                        .text("Global Temperature Anomaly");
 
                 }
                 
