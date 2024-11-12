@@ -29,6 +29,15 @@
                     var margin = { top: 50, right: 50, bottom: 50, left:50},
                         width = 900 - margin.left - margin.right,
                         height = 670 - margin.top - margin.bottom;
+
+                    //Create x and y scales for CO2 values (y-axis (integer - ppm)) and time (x-axis (integer – years ago)) 
+                    var y = d3.scaleLinear()
+                        .domain(d3.extent(data,function(d){ return d["co2_ppmv"];}))
+                        .range([height,0]); //seems backwards because svg y is down
+                    var x = d3.scaleLinear()
+                        .domain(d3.extent(data,function(d){ return (d["years_before_2023"]);})) //CO2 values
+                        .range([0,width]);
+               
                 }
             </script>
         </body>
