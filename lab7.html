@@ -58,7 +58,16 @@
                         .append("svg")
                             .attr("width",width + margin.left + margin.right)
                             .attr("height",height + margin.top + margin.bottom)
-                            
+                    
+                    //add axes and the line object to the SVG
+                    svg.append('g') //append a <g> - group element
+                        .attr('class','x axis')
+                        .call(xAxis); //let the axis do its thing
+                    svg.append('g')
+                        .attr('class','y axis') //specity classes
+                        .call(yAxis);
+                    svg.append("path") //Add the valueline path
+                        .attr("d",valueLine(data));
                 }
             </script>
         </body>
