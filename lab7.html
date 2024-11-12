@@ -67,7 +67,10 @@
                         .attr('class','y axis') //specity classes
                         .call(yAxis);
                     svg.append("path") //Add the valueline path
-                        .attr("d",valueLine(data));
+                        .attr("d",valueLine(data))
+                        .attr("stroke", "red")
+                        .attr("stroke-width", 2)
+                        .attr("fill", "none");
                 }
             </script>
         </body>
