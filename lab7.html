@@ -45,10 +45,11 @@
                     //Set up SVG size and margins
                     var margin = { top: 50, right: 50, bottom: 50, left:80},
                         //margin2 defines the dimensions of smaller context chart(brush area)
-                        margin2 = { top: 430, right: 20, bottom: 30, left:40},
+                        margin2 = { top: 0, right: 50, bottom: 150, left:80},
                         width = 900 - margin.left - margin.right,
                         height = 670 - margin.top - margin.bottom,
-                        height2 = 670 - margin2.top - margin2.bottom;
+                        width2 = 900 - margin2.left - margin2.right,
+                        height2 = 200 - margin2.top - margin2.bottom;
 
                     //Create x and y scales for CO2 values (y-axis (integer - ppm)) and time (x-axis (integer – years ago)) 
                     var y = d3.scaleLinear()
@@ -85,20 +86,16 @@
                         .ticks(5);
                     //x_zoom for the brush area(context charts)
                     var xAxis2 = d3.axisBottom(x_zoom)
-                        .ticks(3);//specify the number of ticks
+                        .ticks(10);//specify the number of ticks
                     
-                    //Creating Brush and Zoom
-                    //enables selecting a range on the context chart (for brushing)
                     var brush = d3.brushX()
-                    .extent([[0, 0], [width, height2]])
-                    .on("brush end", brushed);
-
-                    //enables zooming and panning on the main chart
+                        .extent([[0, 0], [width, height2]])
+                        .on("brush end", brushed);
                     var zoom = d3.zoom()
-                    .scaleExtent([1, Infinity])
-                    .translateExtent([[0, 0], [width, height]])
-                    .extent([[0, 0], [width, height]])
-                    .on("zoom", zoomed);
+                        .scaleExtent([1, Infinity])
+                        .translateExtent([[0, 0], [width, height]])
+                        .extent([[0, 0], [width, height]])
+                        .on("zoom", zoomed);
                
                     //Create line (d3.line()) objects
                     var valueLine = d3.line() //draw line - map x,y coords for each data point using the scales
@@ -128,24 +125,17 @@
                         .append("g")
                         //adds an offset
                         .attr("transform","translate(" + margin.left + ","+margin.top+")");
-                    //to store the main chart's line for selection in the zoomed and brushed functions
-                    var Line_chart = svg.append("path")
-                        .datum(data)
-                        .attr("class", "main-line") // Assign a class to the main line
-                        .attr("d", valueLine(data))
-                        .attr("stroke", "red")
-                        .attr("stroke-width", 2)
-                        .attr("fill", "none");
-
-                    //Holds the axes for the main chart    
-                    var focus = svg.append("g")
-                        .attr("class", "focus")
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-                    //Holds the line and axes for the brush area
-                    var context = svg.append("g")
-                        .attr("class", "context")
-                        .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
-                                            
+                    
+                    //Append an SVG element to the webpage
+                    var svg2 = d3.select('body')
+                        .append("svg")
+                            .attr("width",width2 + margin2.left + margin2.right)
+                            .attr("height",70)
+                        .append("g")
+                        //adds an offset
+                        .attr("transform","translate(" + margin2.left + ","+margin2.top+")");
+                     
+                        
                     // Append chart title
                     svg.append("text")
                         .attr("class", "chart-title")
@@ -170,6 +160,7 @@
                         .call(yAxis2);
                     
                     svg.append("path") //Add the valueline path
+                        .attr("class", "line co2")
                         .attr("d",valueLine(data))
                         .attr("stroke", "red") //Make the graph line red
                         .attr("stroke-width", 2)
@@ -177,6 +168,7 @@
                     
                     // Draw line for secondary y-axis data
                     svg.append("path")
+                        .attr("class", "line temp")
                         .attr("d", valueLineRight(data))
                         .attr("stroke", "blue") // Color for secondary y-axis line
                         .attr("stroke-width", 2)
@@ -184,13 +176,11 @@
 
                     // Draw line for Methane
                     svg.append("path")
+                        .attr("class", "line methane")
                         .attr("d", valueLineMethane(data))
                         .attr("stroke", "black") // Color for secondary y-axis line
                         .attr("stroke-width", 2)
                         .attr("fill", "none");
-
-                    
-
                     
                     // Add x-axis label with larger font size
                     svg.append("text")
@@ -198,8 +188,6 @@
                         .attr("x", width/2-50)
                         .attr("y", height + 40)
                         .text("years_before_2023");
-
-                    
 
                     // Add y-axis label with larger font size
                     svg.append("text")
@@ -218,27 +206,78 @@
                         .attr("transform", "rotate(90)")
                         .attr("text-anchor", "middle")
                         .text("Global Temperature Anomaly");
+                    
+                    //add axes and the line object to the SVG
+                    svg2.append('g') //append a <g> - group element
+                        .attr('class','x axis')
+                        .attr("transform", "translate(0," + height2 + ")")
+                        .call(xAxis2); //let the axis do its thing
 
-                }
-                
-                function brushed() {
-                    if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-                    var s = d3.event.selection || x2.range();
-                    x.domain(s.map(x2.invert, x2));
-                    Line_chart.select(".line").attr("d", line);
-                    focus.select(".axis--x").call(xAxis);
-                    svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
-                    .scale(width / (s[1] - s[0]))
-                    .translate(-s[0], 0));
-                }
-                function zoomed() {
-                    if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
-                    var t = d3.event.transform;
-                    x.domain(t.rescaleX(x2).domain());
-                    Line_chart.select(".line").attr("d", line);
-                    focus.select(".axis--x").call(xAxis);
-                    context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
-                }
+                    svg2.append('g')
+                        .attr('class','y axis') //specity classes
+                        .call(yAxis2);
+                    
+                    svg2.append("path") //Add the valueline path
+                        .attr("d",valueLine2(data))
+                        .attr("stroke", "red") //Make the graph line red
+                        .attr("stroke-width", 2)
+                        .attr("fill", "none");
+                    
+                    // Append brush to svg2 (smaller chart)
+                    svg2.append("g")
+                        .attr("class", "brush")
+                        .call(brush)
+                        .call(brush.move, x.range()); // Initiate the brush over the full x-axis
+                    
+                    // Append a zoom rectangle to the main chart
+                    svg.append("rect")
+                        .attr("class", "zoom")
+                        .attr("width", width)
+                        .attr("height", height)
+                        .attr("transform", "translate(0,0)")
+                        .call(zoom);
+
+                    function brushed(event) {
+                    if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // Ignore brush-by-zoom
+                        const selection = d3.event.selection || x_zoom.range();
+                        x.domain(selection.map(x_zoom.invert, x_zoom));
+                        // Update main chart elements to reflect the brushed area
+                        svg.select(".line.co2")
+                            .attr("d", valueLine(data));
+                        
+                        svg.select(".line.temp")
+                            .attr("d", valueLineRight(data));
+                        
+                        svg.select(".line.methane")
+                            .attr("d", valueLineMethane(data));
+
+                        svg.select(".x.axis")
+                            .call(xAxis);
+                    }
+
+                    function zoomed(event) {
+                        if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // Ignore zoom-by-brush
+                        const transform = event.transform;
+                        x.domain(transform.rescaleX(x_zoom).domain());
+
+                        // Update main chart elements to reflect the zoomed area
+                        svg.select(".line.co2")
+                            .attr("d", valueLine(data));
+                        
+                        svg.select(".line.temp")
+                            .attr("d", valueLineRight(data));
+
+                        svg.select(".line.methane")
+                            .attr("d", valueLineMethane(data));
+
+                        svg.select(".x.axis")
+                            .call(xAxis);
+
+                        svg2.select(".brush")
+                            .call(brush.move, x.range().map(transform.invertX, transform));
+                        }
+
+                    }
 
             </script>
         </body>
