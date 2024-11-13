@@ -46,8 +46,10 @@
                     var margin = { top: 50, right: 50, bottom: 50, left:80},
                         //margin2 defines the dimensions of smaller context chart(brush area)
                         margin2 = { top: 0, right: 50, bottom: 150, left:80},
+                        //set width and height for main chart
                         width = 900 - margin.left - margin.right,
                         height = 670 - margin.top - margin.bottom,
+                        //set width and height for smaller chart
                         width2 = 900 - margin2.left - margin2.right,
                         height2 = 200 - margin2.top - margin2.bottom;
 
@@ -65,7 +67,7 @@
                     var x2 = d3.scaleLinear()
                         .domain(d3.extent(data,function(d){ return (d["ch4_ppb"]);})) //CO2 values
                         .range([height,0]);  
-                    //Brush Area
+                    //Brush Area or Zoom Area (smaller chart)
                     var y_zoom = d3.scaleLinear()
                         .domain(d3.extent(data,function(d){ return d["co2_ppmv"];}))
                         .range([height2,0]); //seems backwards because svg y is down
@@ -88,14 +90,16 @@
                     var xAxis2 = d3.axisBottom(x_zoom)
                         .ticks(10);//specify the number of ticks
                     
+                    //Create a brush - for select specific years in the smaller chart
                     var brush = d3.brushX()
-                        .extent([[0, 0], [width, height2]])
-                        .on("brush end", brushed);
+                        .extent([[0, 0], [width, height2]]) //set the brush area
+                        .on("brush end", brushed); //when the brush action ends, call the brushed function to update the main chart
+                    //Creat zoom behavior - for zooming in and out on main chart
                     var zoom = d3.zoom()
-                        .scaleExtent([1, Infinity])
-                        .translateExtent([[0, 0], [width, height]])
-                        .extent([[0, 0], [width, height]])
-                        .on("zoom", zoomed);
+                        .scaleExtent([1, Infinity]) //sets the allowed zoom scale 1-infinite
+                        .translateExtent([[0, 0], [width, height]]) //preventing the zoom from panning outside the chart area
+                        .extent([[0, 0], [width, height]]) //define the bounds of zoomable area
+                        .on("zoom", zoomed); //call zoomed function to update the main chart
                
                     //Create line (d3.line()) objects
                     var valueLine = d3.line() //draw line - map x,y coords for each data point using the scales
@@ -171,7 +175,7 @@
                         .attr("stroke", "red") //Make the graph line red
                         .attr("stroke-width", 2)
                         .attr("fill", "none")
-                        .attr("clip-path", "url(#clip)"); //make sure the line don’t extend outside the chart’s visible area
+                        .attr("clip-path", "url(#clip)"); //to make sure the line don’t extend outside the chart’s visible area
                     
                     // Draw line for secondary y-axis data
                     svg.append("path")
@@ -180,7 +184,7 @@
                         .attr("stroke", "blue") // Color for secondary y-axis line
                         .attr("stroke-width", 2)
                         .attr("fill", "none")
-                        .attr("clip-path", "url(#clip)"); //make sure the line don’t extend outside the chart’s visible area
+                        .attr("clip-path", "url(#clip)"); //to make sure the line don’t extend outside the chart’s visible area
 
                     // Draw line for Methane
                     svg.append("path")
@@ -189,7 +193,7 @@
                         .attr("stroke", "black") // Color for secondary y-axis line
                         .attr("stroke-width", 2)
                         .attr("fill", "none")
-                        .attr("clip-path", "url(#clip)"); //make sure the line don’t extend outside the chart’s visible area
+                        .attr("clip-path", "url(#clip)"); //to make sure the line don’t extend outside the chart’s visible area
                     
                     // Add x-axis label with larger font size
                     svg.append("text")
@@ -245,43 +249,52 @@
                         .attr("height", height)
                         .attr("transform", "translate(0,0)")
                         .call(zoom);
-
+                    
+                    //brush on the smaller chart
                     function brushed(event) {
+                    //if brush event is triggered by a zoom
                     if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // Ignore brush-by-zoom
                         const selection = d3.event.selection || x_zoom.range();
+                        // The 'map' and 'invert' functions adjust the x-domain to fit the brushed area
                         x.domain(selection.map(x_zoom.invert, x_zoom));
-                        // Update main chart elements to reflect the brushed area
-                        svg.select(".line.co2")
+                        //Update the x-axis domain of the main chart based on the selected area in the brush
+                        svg.select(".line.co2")//red line
                             .attr("d", valueLine(data));
                         
-                        svg.select(".line.temp")
+                        svg.select(".line.temp")//blue line
                             .attr("d", valueLineRight(data));
                         
-                        svg.select(".line.methane")
+                        svg.select(".line.methane")//black line
                             .attr("d", valueLineMethane(data));
 
                         svg.select(".x.axis")
-                            .call(xAxis);
+                            .call(xAxis); // Re-draw the x-axis based on the new area selected
                     }
-
+                    
+                    //a function to handles when a user zooms
                     function zoomed(event) {
+                        //If the zoom event was triggered by a brush-ignore it(return)
                         if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // Ignore zoom-by-brush
+                        //get the scale and translate
                         const transform = event.transform;
+                        //Update x-axis domain based on the zoom transformation
+                        // 'rescaleX' adjusts the x-scale to match the zoomed domain (it rescales the x-axis)
                         x.domain(transform.rescaleX(x_zoom).domain());
 
                         // Update main chart elements to reflect the zoomed area
-                        svg.select(".line.co2")
-                            .attr("d", valueLine(data));
+                        svg.select(".line.co2")//red line
+                            .attr("d", valueLine(data)); //redraw
                         
-                        svg.select(".line.temp")
-                            .attr("d", valueLineRight(data));
+                        svg.select(".line.temp")//blue line
+                            .attr("d", valueLineRight(data));//redraw
 
-                        svg.select(".line.methane")
-                            .attr("d", valueLineMethane(data));
+                        svg.select(".line.methane")//black line
+                            .attr("d", valueLineMethane(data));//redraw
 
                         svg.select(".x.axis")
-                            .call(xAxis);
+                            .call(xAxis); //re-draw based on zoomed area
 
+                        // Update the brush position on the smaller context chart to match the zoom on the main chart
                         svg2.select(".brush")
                             .call(brush.move, x.range().map(transform.invertX, transform));
                         }
