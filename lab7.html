@@ -134,7 +134,13 @@
                         .append("g")
                         //adds an offset
                         .attr("transform","translate(" + margin2.left + ","+margin2.top+")");
-                     
+                    
+                    // Define a clipping path- to matches the dimensions of the main chart's area
+                    svg.append("defs").append("clipPath")
+                        .attr("id", "clip")
+                        .append("rect")
+                        .attr("width", width)
+                        .attr("height", height);
                         
                     // Append chart title
                     svg.append("text")
@@ -164,7 +170,8 @@
                         .attr("d",valueLine(data))
                         .attr("stroke", "red") //Make the graph line red
                         .attr("stroke-width", 2)
-                        .attr("fill", "none");
+                        .attr("fill", "none")
+                        .attr("clip-path", "url(#clip)"); //make sure the line don’t extend outside the chart’s visible area
                     
                     // Draw line for secondary y-axis data
                     svg.append("path")
@@ -172,7 +179,8 @@
                         .attr("d", valueLineRight(data))
                         .attr("stroke", "blue") // Color for secondary y-axis line
                         .attr("stroke-width", 2)
-                        .attr("fill", "none");
+                        .attr("fill", "none")
+                        .attr("clip-path", "url(#clip)"); //make sure the line don’t extend outside the chart’s visible area
 
                     // Draw line for Methane
                     svg.append("path")
@@ -180,7 +188,8 @@
                         .attr("d", valueLineMethane(data))
                         .attr("stroke", "black") // Color for secondary y-axis line
                         .attr("stroke-width", 2)
-                        .attr("fill", "none");
+                        .attr("fill", "none")
+                        .attr("clip-path", "url(#clip)"); //make sure the line don’t extend outside the chart’s visible area
                     
                     // Add x-axis label with larger font size
                     svg.append("text")
