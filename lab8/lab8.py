@@ -21,39 +21,27 @@ plt.figure(figsize=(12, 8))
 nrows, ncols = 2, 1
 
 # Plot the original image
-plt.subplot(2, 3, 1)
+plt.subplot(2, 2, 1)
 plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))  # Convert BGR to RGB
 plt.title('Original Image')
 plt.xticks([]), plt.yticks([])
 
 # Plot the grayscale image
-plt.subplot(2, 3, 2)
+plt.subplot(2, 2, 2)
 plt.imshow(gray_image, cmap='gray')
 plt.title('Grayscale Image')
 plt.xticks([]), plt.yticks([])
 
 # 3x3 Gaussian Blur
-plt.subplot(2, 3, 3)
+plt.subplot(2, 2, 3)
 plt.imshow(blur_3x3, cmap='gray')
-plt.title('3x3 Kernel')
-plt.xticks([]), plt.yticks([])
-
-# 5x5 Gaussian Blur
-plt.subplot(2, 3, 4)
-plt.imshow(blur_5x5, cmap='gray')
-plt.title('5x5 Kernel')
-plt.xticks([]), plt.yticks([])
-
-# 9x9 Gaussian Blur
-plt.subplot(2, 3, 5)
-plt.imshow(blur_9x9, cmap='gray')
-plt.title('9x9 Kernel')
+plt.title('3x3 Blur')
 plt.xticks([]), plt.yticks([])
 
 # 13x13 Gaussian Blur
-plt.subplot(2, 3, 6)
+plt.subplot(2, 2, 4)
 plt.imshow(blur_13x13, cmap='gray')
-plt.title('13x13 Kernel')
+plt.title('13x13 Blur')
 plt.xticks([]), plt.yticks([])
 
 # Show the plots
