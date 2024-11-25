@@ -1,6 +1,9 @@
 import cv2
 import numpy as np 
 from matplotlib import pyplot as plt
+#import tensorflow as tf #to define the CNN for edge detection
+#from tensorflow.keras import models, layers, losses, activations, regularizers, metrics
+#import os
 
 # Load the input image
 img = cv2.imread('ATU.jpg',)
@@ -21,10 +24,15 @@ sobel_vertical = cv2.Sobel(gray_image, cv2.CV_64F, 0, 1, ksize=5)    # y directi
 # Combine the two Sobel gradients (you can either sum or compute the magnitude)
 sobel_sum = cv2.add(sobel_horizontal, sobel_vertical)
 
-# Perform Canny edge detection
+# Perform Canny edge detection - should give cleaner, sharper edges.
 cannyThreshold = 100
 cannyParam2 = 200  # Typically 2-3 times the lower threshold
 canny_edges = cv2.Canny(blur_5x5, cannyThreshold, cannyParam2)
+
+# will likely result in more edges (lower thresholds are more sensitive)
+cannyThreshold2 = 0 
+cannyParam2_1 = 200  # Typically 2-3 times the lower threshold
+canny_edges2 = cv2.Canny(blur_5x5, cannyThreshold2, cannyParam2_1)
 
 # Function to apply a threshold using a for loop
 def threshold_sobel(sobel_sum, threshold):
@@ -45,39 +53,57 @@ plt.figure(figsize=(12, 8))
 nrows, ncols = 2, 1
 
 # Plot the original image
-plt.subplot(2, 3, 1)
+plt.subplot(3, 3, 1)
 plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))  # Convert BGR to RGB
 plt.title('Original Image')
 plt.xticks([]), plt.yticks([])
 
 # Plot the grayscale image
-plt.subplot(2, 3, 2)
+plt.subplot(3, 3, 2)
 plt.imshow(gray_image, cmap='gray')
 plt.title('Grayscale Image')
 plt.xticks([]), plt.yticks([])
 
+# 3x3 Gaussian Blur
+plt.subplot(3, 3, 3)
+plt.imshow(blur_3x3, cmap='gray')
+plt.title('3x3 Kernel')
+plt.xticks([]), plt.yticks([])
+
+# 13x13 Gaussian Blur
+plt.subplot(3, 3, 4)
+plt.imshow(blur_13x13, cmap='gray')
+plt.title('13x13 Kernel')
+plt.xticks([]), plt.yticks([])
+
 # Plot horizontal Sobel output
-plt.subplot(2, 3, 3)
+plt.subplot(3, 3, 5)
 plt.imshow(sobel_horizontal, cmap='gray')
 plt.title('Sobel X')
 plt.xticks([]), plt.yticks([])
 
 # Plot vertical Sobel output
-plt.subplot(2, 3, 4)
+plt.subplot(3, 3, 6)
 plt.imshow(sobel_vertical, cmap='gray')
 plt.title('Sobel Y')
 plt.xticks([]), plt.yticks([])
 
 # Plot Combined Sobel
-plt.subplot(2, 3, 5)
+plt.subplot(3, 3, 7)
 plt.imshow(sobel_sum, cmap='gray')
 plt.title('Sobel Sum')
 plt.xticks([]), plt.yticks([])
 
 # Canny edges
-plt.subplot(2, 3, 6)
+plt.subplot(3, 3, 8)
 plt.imshow(canny_edges, cmap='gray')
 plt.title('Canny Edge Image')
+plt.xticks([]), plt.yticks([])
+
+# Canny edges 2
+plt.subplot(3, 3, 9)
+plt.imshow(canny_edges2, cmap='gray')
+plt.title('Canny Edge Image2')
 plt.xticks([]), plt.yticks([])
 
 # Show the plots
