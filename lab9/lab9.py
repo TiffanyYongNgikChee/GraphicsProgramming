@@ -72,6 +72,12 @@ plt.imshow(cv2.cvtColor(imgHarris, cv2.COLOR_BGR2RGB))  # Convert to RGB for dis
 plt.title('Harris Corners')
 plt.xticks([]), plt.yticks([])
 
+# Plot the image with Shi-Tomasi corners
+plt.subplot(3, 3, 4)
+plt.imshow(cv2.cvtColor(imgShiTomasi, cv2.COLOR_BGR2RGB))  # Convert to RGB for display
+plt.title('Shi-Tomasi Corners')
+plt.xticks([]), plt.yticks([])
+
 # Show the plots
 plt.tight_layout()
 plt.show()
