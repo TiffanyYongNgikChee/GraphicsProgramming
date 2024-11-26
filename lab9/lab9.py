@@ -8,6 +8,15 @@ img = cv2.imread('ATU1.jpg',)
 # Convert the image to greyscale
 gray_image=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
+# Perform Harris corner detection
+blockSize = 2
+aperture_size = 3
+k = 0.04
+dst = cv2.cornerHarris(gray_image, blockSize, aperture_size, k)
+
+# Create a deep copy of the original image
+imgHarris = img.copy()
+
 # Plot the results
 plt.figure(figsize=(12, 8))
 
