@@ -37,6 +37,9 @@ qualityLevel = 0.01
 minDistance = 10
 corners = cv2.goodFeaturesToTrack(gray_image, maxCorners=maxCorners, qualityLevel=qualityLevel, minDistance=minDistance)
 
+# Create a deep copy of the original image
+imgShiTomasi = img.copy()
+
 # Convert the corners array from 3D to 2D if necessary
 corners = np.int0(corners)  # Convert float coordinates to integers
 
