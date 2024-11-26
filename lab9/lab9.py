@@ -48,6 +48,18 @@ for i in corners:
     x, y = i.ravel()  # Flatten the corner coordinates
     cv2.circle(imgShiTomasi, (x, y), 3, (0, 255, 0), -1)  # Draw green circles for the corners
 
+# Create an ORB object with the function - Initiate ORB detector
+orb = cv2.ORB_create()
+
+# find the keypoints with ORB
+kp = orb.detect(img,None)
+ 
+# compute the descriptors with ORB
+kp, des = orb.compute(img, kp)
+ 
+# draw only keypoints location,not size and orientation
+imgORB = cv2.drawKeypoints(img, kp, None, color=(0,255,0), flags=0)
+
 # Plot the results
 plt.figure(figsize=(12, 8))
 
@@ -76,6 +88,12 @@ plt.xticks([]), plt.yticks([])
 plt.subplot(3, 3, 4)
 plt.imshow(cv2.cvtColor(imgShiTomasi, cv2.COLOR_BGR2RGB))  # Convert to RGB for display
 plt.title('Shi-Tomasi Corners')
+plt.xticks([]), plt.yticks([])
+
+# Plot the image with Shi-Tomasi corners
+plt.subplot(3, 3, 5)
+plt.imshow(cv2.cvtColor(imgORB, cv2.COLOR_BGR2RGB))  # Convert to RGB for display
+plt.title('ORB Image')
 plt.xticks([]), plt.yticks([])
 
 # Show the plots
