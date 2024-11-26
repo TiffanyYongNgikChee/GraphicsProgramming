@@ -115,27 +115,27 @@ plt.figure(figsize=(15, 10))
 # Nature.jpg plots
 plt.subplot(2, 3, 1)
 plt.imshow(cv2.cvtColor(img2, cv2.COLOR_BGR2RGB))
-plt.title('Nature - Original')
+plt.title('Original')
 plt.axis('off')
 
 plt.subplot(2, 3, 2)
 plt.imshow(gray_image2, cmap='gray')
-plt.title('Nature - Grayscale')
+plt.title('Grayscale')
 plt.axis('off')
 
 plt.subplot(2, 3, 3)
 plt.imshow(cv2.cvtColor(imgHarris2, cv2.COLOR_BGR2RGB))
-plt.title('Nature - Harris Corners')
+plt.title('Harris Corners')
 plt.axis('off')
 
 plt.subplot(2, 3, 4)
 plt.imshow(cv2.cvtColor(imgShiTomasi2, cv2.COLOR_BGR2RGB))
-plt.title('Nature - Shi-Tomasi')
+plt.title('Shi-Tomasi')
 plt.axis('off')
 
 plt.subplot(2, 3, 5)
 plt.imshow(cv2.cvtColor(imgORB2, cv2.COLOR_BGR2RGB))
-plt.title('Nature - ORB Keypoints')
+plt.title('ORB Keypoints')
 plt.axis('off')
 
 # Show the plots
