@@ -37,11 +37,16 @@ qualityLevel = 0.01
 minDistance = 10
 corners = cv2.goodFeaturesToTrack(gray_image, maxCorners=maxCorners, qualityLevel=qualityLevel, minDistance=minDistance)
 
+# Convert the corners array from 3D to 2D if necessary
+corners = np.int0(corners)  # Convert float coordinates to integers
+
 # Create a deep copy of the original image
 imgShiTomasi = img.copy()
 
-# Convert the corners array from 3D to 2D if necessary
-corners = np.int0(corners)  # Convert float coordinates to integers
+# Loop through each corner detected by GFTT
+for i in corners:
+    x, y = i.ravel()  # Flatten the corner coordinates
+    cv2.circle(imgShiTomasi, (x, y), 3, (0, 255, 0), -1)  # Draw green circles for the corners
 
 # Plot the results
 plt.figure(figsize=(12, 8))
