@@ -31,6 +31,15 @@ for i in range(len(dst)):
             # Draw a circle at the corner location (j, i)
             cv2.circle(imgHarris, (j, i), 3, (0, 0, 255), -1)  # Red color for the circle
 
+# Perform Shi-Tomasi corner detection (Good Features to Track)
+maxCorners = 100 
+qualityLevel = 0.01
+minDistance = 10
+corners = cv2.goodFeaturesToTrack(gray_image, maxCorners=maxCorners, qualityLevel=qualityLevel, minDistance=minDistance)
+
+# Convert the corners array from 3D to 2D if necessary
+corners = np.int0(corners)  # Convert float coordinates to integers
+
 # Plot the results
 plt.figure(figsize=(12, 8))
 
