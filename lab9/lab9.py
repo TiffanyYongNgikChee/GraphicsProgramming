@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 
 # Load the input image
 img = cv2.imread('ATU1.jpg',)
+img2 = cv2.imread('Nature.jpg',) # Second Image
 
 # Convert the image to greyscale
 gray_image=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
