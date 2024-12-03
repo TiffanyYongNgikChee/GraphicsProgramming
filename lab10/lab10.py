@@ -22,7 +22,9 @@ while cap.isOpened():
         annotated_frame = results[0].plot()
 
         # Display the annotated frame
+        cv2.namedWindow('YOLOv11 Tracking', cv2.WINDOW_KEEPRATIO)
         cv2.imshow("YOLO11 Tracking", annotated_frame)
+        cv2.resizeWindow('YOLOv11 Tracking',1240,700)
 
         # Break the loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord("q"):
