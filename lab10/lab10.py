@@ -12,6 +12,16 @@ model = YOLO("yolo11n.pt")
 video_path = "subway.mp4"
 cap = cv2.VideoCapture(video_path)
 
+# Get video properties
+frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+fps = int(cap.get(cv2.CAP_PROP_FPS))
+output_path = "output_tracking.mp4"
+
+# Initialize VideoWriter
+fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
+
 # Store the track history
 track_history = defaultdict(lambda: {"positions": [], "class": None, "movement": None})
 
@@ -77,6 +87,8 @@ while cap.isOpened():
                     (0, 255, 0),
                     2,
                 )
+        # Write the frame to the output video
+        out.write(annotated_frame)
 
         # Display the annotated frame
         cv2.namedWindow('YOLOv11 Tracking', cv2.WINDOW_KEEPRATIO)
