@@ -13,7 +13,7 @@ video_path = "subway.mp4"
 cap = cv2.VideoCapture(video_path)
 
 # Store the track history
-track_history = defaultdict(lambda: {"positions": [], "class": None})
+track_history = defaultdict(lambda: {"positions": [], "class": None, "movement": None})
 
 # Loop through the video frames
 while cap.isOpened():
@@ -48,6 +48,14 @@ while cap.isOpened():
             track = track_history[track_id]
             track["positions"].append((float(x), float(y)))  # x, y center point
             track["class"] = class_id  # Update class for this track
+
+            # Determine movement direction
+            if len(track["positions"]) >= 2:
+                    # Compare the x-coordinate of the last two positions
+                if track["positions"][-1][0] > track["positions"][-2][0]:
+                    track["movement"] = "Left to Right"
+                elif track["positions"][-1][0] < track["positions"][-2][0]:
+                    track["movement"] = "Right to Left"
             
             # Retain only 30 positions for smoother visualization
             if len(track["positions"]) > 30:
@@ -56,6 +64,19 @@ while cap.isOpened():
             # Draw the tracking lines
             points = np.array(track["positions"], dtype=np.int32).reshape((-1, 1, 2))
             cv2.polylines(annotated_frame, [points], isClosed=False, color=(230, 230, 230), thickness=2)
+
+            # Annotate the direction of movement
+            if track["movement"] is not None:
+                movement_text = track["movement"]
+                cv2.putText(
+                    annotated_frame,
+                    movement_text,
+                    (int(x - w // 2), int(y - h // 2) - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.6,
+                    (0, 255, 0),
+                    2,
+                )
 
         # Display the annotated frame
         cv2.namedWindow('YOLOv11 Tracking', cv2.WINDOW_KEEPRATIO)
@@ -69,15 +90,21 @@ while cap.isOpened():
         # Break the loop if the end of the video is reached
         break
 
-        # Extract unique counts per class
-        class_counts = defaultdict(int)
-        for track_id, data in track_history.items():
-            class_counts[data["class"]] += 1
+    # Extract unique counts per class
+    class_counts = defaultdict(int)
+    for track_id, data in track_history.items():
+        class_counts[data["class"]] += 1
 
-        # Print the results
-        print("Detected objects per class:")
-        for class_id, count in class_counts.items():
-            print(f"Class {class_id}: {count} objects")
+    # Print the results
+    print("Detected objects per class:")
+    for class_id, count in class_counts.items():
+        print(f"Class {class_id}: {count} objects")
+
+    # Print movement direction of tracked objects
+    print("Movement direction of tracked objects:")
+    for track_id, data in track_history.items():
+        print(f"Track ID {track_id}: {data['movement']}")
+    
 
 # Release the video capture object and close the display window
 cap.release()
