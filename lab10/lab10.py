@@ -5,6 +5,7 @@ import numpy as np
 
 from ultralytics import YOLO
 
+
 # Load the YOLO11 model
 model = YOLO("yolo11n.pt")
 
